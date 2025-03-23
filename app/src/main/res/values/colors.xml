@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="biru_lembut">#5C6BC0</color>
+    <color name="biru_dalam">#3949AB</color>
+    <color name="biru_terang">#1E88E5</color>
+    <color name="biru_elegan">#283593</color>
+    <color name="biru_keunguan">#6A74CF</color>
+
 </resources>
