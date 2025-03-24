@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="biruMuda">#4CABF0</color>
+    <color name="tosca">#57C4B6</color>
+    <color name="toscaTua">#3A9F99</color>
+    <color name="toscaMuda">#A7E8E1</color>
+    <color name="softBlue">#A3D4FF</color>
+    <color name="netral">#F0F8FF</color>
+    <color name="grey">#B0B0B0</color>
+
 </resources>
