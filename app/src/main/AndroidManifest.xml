@@ -17,12 +17,8 @@
             android:exported="false" />
         <activity
             android:name=".LauncherActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".detailEvent"
@@ -31,6 +27,16 @@
             android:name=".LoginActivity"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
