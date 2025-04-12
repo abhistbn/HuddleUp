@@ -16,7 +16,7 @@
             android:name=".SiginActivity"
             android:exported="false" />
         <activity
-            android:name=".LauncherActivity"
+            android:name=".WishlistActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
