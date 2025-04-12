@@ -2,4 +2,7 @@
     <string name="app_name">HuddleUp</string>
     <string name="ready">at Universitas Brawijaya. <b>Are you ready?</b></string>
     <string name="back">&lt; Back</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="notification_title">Title</string>
+
 </resources>
