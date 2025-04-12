@@ -13,28 +13,34 @@
         android:theme="@style/Theme.HuddleUp"
         tools:targetApi="31">
         <activity
+            android:name=".EventCheckedInActivity"
+            android:exported="false" />
+        <activity
             android:name=".SiginActivity"
             android:exported="false" />
         <activity
+            android:name=".detailEvent"
+            android:exported="false"/>
+        <activity
             android:name=".WishlistActivity"
+            android:exported="false"/>
+      
+        <activity
+            android:name=".LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".detailEvent"
-            android:exported="false" />
+
         <activity
             android:name=".LoginActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".NotificationActivity"
-            android:exported="false" >
-        </activity>
-
+            android:exported="false" />
+ 
     </application>
 
 </manifest>

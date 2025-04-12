@@ -179,22 +179,37 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_daftar"
-            android:layout_width="350dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="100dp"
-            android:background="@drawable/btn_sigin"
-            android:fontFamily="@font/poppinsmedium"
-            android:text="Check In Event"
-            android:elevation="8dp"
-            android:textSize="15sp"
-            android:textStyle="bold"
+        <LinearLayout
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="460dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_login"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textViewEventTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/textViewStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView12"
@@ -209,7 +224,7 @@
             android:text="About Event"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_daftar" />
+            app:layout_constraintTop_toBottomOf="@+id/status" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -233,6 +248,20 @@
                 android:justificationMode="inter_word"/>
         </ScrollView>
 
+        <TextView
+            android:id="@+id/tvdBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="290dp"
+            android:text="@string/back"
+            android:textSize="20sp"
+            android:fontFamily="@font/poppinsmedium"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
