@@ -1,0 +1,80 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notifikasi"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@drawable/background"
+        android:textColor="@color/black"
+        android:layout_alignParentTop="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerNotifikasi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/tvTitle"
+        android:background="@color/white"
+        android:layout_above="@id/bottomNavbar"
+        android:padding="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/bottomNavbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:background="#EEEEEE">
+
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Home"
+            android:textSize="12dp"
+            android:drawableTop="@drawable/ic_homepage"
+            android:gravity="center"
+            android:paddingTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnNotifikasi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Notifikasi"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_notification"
+            android:enabled="false"
+            android:gravity="center"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/btnDashboard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Dashboard"
+            android:drawableTop="@drawable/ic_dashboard"
+            android:gravity="center"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Profile"
+            android:drawableTop="@drawable/ic_pfp"
+            android:gravity="center"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+</RelativeLayout>
