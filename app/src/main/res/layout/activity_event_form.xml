@@ -12,8 +12,24 @@
         android:hint="Nama Event" />
 
     <Button
+        android:id="@+id/btnChooseImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih Poster" />
+
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
+        android:background="#E0E0E0" />
+
+    <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Simpan" />
+
 </LinearLayout>
