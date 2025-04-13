@@ -1,16 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     package="com.example.huddleup">
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        <!-- Aktivitas utama -->
-        <activity android:name=".MainActivity"
         android:theme="@style/Theme.HuddleUp"
         tools:targetApi="31">
+        <activity android:name=".MainActivity"
+            android:exported="false" />
         <activity
             android:name=".EventKu"
             android:exported="false" />
@@ -38,15 +42,6 @@
 
         <!-- Aktivitas untuk form -->
         <activity android:name=".EventFormActivity" />
-
-        <!-- Nonaktifkan sementara activity yang tidak diperlukan -->
-        <!-- <activity android:name=".detailEvent" /> -->
-        <!-- <activity android:name=".EventCheckedInActivity" /> -->
-        <!-- <activity android:name=".LauncherActivity" /> -->
-        <!-- <activity android:name=".LoginActivity" /> -->
-        <!-- <activity android:name=".NotificationActivity" /> -->
-        <!-- <activity android:name=".SiginActivity" /> -->
-        <!-- <activity android:name=".WishlistActivity" /> -->
 
         <activity
             android:name=".LoginActivity"
