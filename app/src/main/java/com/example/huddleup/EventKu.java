@@ -3,11 +3,7 @@ package com.example.huddleup;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -18,7 +14,7 @@ public class EventKu extends AppCompatActivity {
 
     static ArrayList<EventModel> eventKuList = new ArrayList<>();
     RecyclerView recyclerView;
-    EventAdapter adapter;
+    EventAdapterMyEvent adapter;
     List<EventModel> eventList;
 
     @Override
@@ -45,8 +41,7 @@ public class EventKu extends AppCompatActivity {
         eventKuList.add(new EventModel("UI/UX Workshop", "20 April 2025", "10.00 - 12.00", "Online (Zoom)", "Belajar dasar desain UI/UX"));
         eventKuList.add(new EventModel("Startup Pitch", "27 April 2025", "13.00 - 16.00", "Bandung", "Presentasi ide startup oleh mahasiswa"));
 
-
-        adapter = new EventAdapter(eventKuList, null);
+        adapter = new EventAdapterMyEvent (eventKuList, null);
         recyclerView.setAdapter(adapter);
     }
 }
