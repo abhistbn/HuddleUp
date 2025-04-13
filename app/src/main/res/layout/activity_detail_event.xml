@@ -1,241 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@color/kindaWhite">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".detailEvent"
-        android:background="@drawable/bg_detailevent">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="40dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/event" />
-        </androidx.cardview.widget.CardView>
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:id="@+id/eventName"
+            android:id="@+id/tvde_Back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="65dp"
-            android:layout_marginEnd="27dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="70dp"
+            android:text="@string/back"
+            android:textSize="18sp"
             android:fontFamily="@font/poppinsmedium"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:text="Workshop Penulisan Artikel Ilmiah"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cardView"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="@color/biruMuda" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/tv_de"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Penggunaan Artificial Intelligence"
-            android:fontFamily="@font/poppinsmedium"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cardView"
-            app:layout_constraintTop_toBottomOf="@+id/eventName" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="160dp"
-            android:background="@drawable/kalender"
+            android:layout_marginTop="30dp"
+            android:padding="2dp"
             android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:textSize="20sp"
+            android:text="Event Details"
+            android:textColor="@color/biruMuda"
+            android:fontFamily="@font/poppinsmedium"/>
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppinsmedium"
-                android:text="Feb"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppinsmedium"
-                android:text="26"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp">
+                <ImageView
+                    android:id="@+id/imgEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/event" />
+
+                <LinearLayout
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_popupevent">
+
+                    <TextView
+                        android:id="@+id/txtJudul"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pool Party"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/poppinsmedium"
+                        android:textStyle="bold"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/txtTanggal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="XX Lorem 20xx"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="8dp"/>
+                        <TextView
+                            android:id="@+id/txtWaktu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="00.00 - 00.00"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/white"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtLokasi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zoom Meeting"
+                        android:textColor="@color/green"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppinsmedium"/>
+                </LinearLayout>
+
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
+            android:id="@+id/Deskripsi"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="49dp"
-            android:layout_marginEnd="118dp"
-            android:fontFamily="@font/poppinsmedium"
-            android:textColor="@color/white"
+            android:layout_marginTop="30dp"
+            android:text="DESCRIPTION"
+            android:textColor="@color/darkGrey"
             android:textSize="17sp"
-            android:text="Rabu, Februari 2025"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            android:fontFamily="@font/poppinsmedium" />
 
         <TextView
-            android:id="@+id/textView11"
-            android:layout_width="wrap_content"
+            android:id="@+id/txtAbout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="118dp"
-            android:text="08.00 - 11.30 WIB"
+            android:layout_marginTop="10dp"
+            android:text="This is a summertime and the perfect weather for a pool party! Invite your friends over for a day of sun, fun, games, and music. Don’t forget to pack sunscreen, swimsuits, and pool toys."
+            android:textColor="@color/black"
             android:fontFamily="@font/poppinsmedium"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            android:textSize="18sp"
+            android:lineSpacingExtra="4dp" />
+    </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/location"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_event"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView11">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:contentDescription="@null"
-                android:src="@drawable/loc" />
-
-            <TextView
-                android:id="@+id/textViewLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/poppinsmedium"
-                android:text="Zoom Meeting"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_event"
-            android:elevation="8dp"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/location">
-
-            <TextView
-                android:id="@+id/textViewSpeaker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/poppinsmedium"
-                android:text="Narasumber: Assoc. Prof. Muhammad Roil Bilad (Universiti Brunei Darussalam)"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <Button
+    <Button
             android:id="@+id/btn_daftar"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_marginStart="100dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="800dp"
             android:layout_marginEnd="100dp"
-            android:background="@drawable/btn_sigin"
+            android:background="@drawable/btn_siginsigin"
             android:fontFamily="@font/poppinsmedium"
             android:text="Check In Event"
             android:elevation="8dp"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="300dp"
-            android:fontFamily="@font/poppinsmedium"
+            android:textSize="18sp"
             android:textColor="@color/white"
-            android:textSize="17sp"
-            android:text="About Event"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_daftar" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12">
-
-            <TextView
-                android:id="@+id/textViewDeskripsi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sehubungan dengan semakin berkembangnya Artificial Intelligence (AI), membuka peluang bagi dosen dan peneliti untuk memaksimalkan penggunaan AI dalam membantu penulisan artikel ilmiah pada jurnal internasional bereputasi. Namun, belum semua dosen dan peneliti mengetahui cara penyempurnaan penulisan artikel ilmiah dengan bantuan AI, dengan tetap memperhatikan kaidah-kaidah ilmiah yang diperbolehkan. Oleh karena itu, Sub-Direktorat Publikasi Ilmiah dan Ketahanan Jurnal DRPM akan melaksanakan kegiatan workshop penggunaan AI dalam penulisan artikel ilmiah dan mengundang Bapak/Ibu/Saudara/i untuk menghadiri webinar kami yang berjudul WORKSHOP PENULISAN ARTIKEL ILMIAH UNTUK JURNAL INTERNASIONAL BEREPUTASI: PENGGUNAAN ARTIFICIAL INTELLIGENCE."
-                android:textSize="12sp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppinsmedium"
-                android:breakStrategy="simple"
-                android:justificationMode="inter_word"/>
-        </ScrollView>
-
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
 
 
 

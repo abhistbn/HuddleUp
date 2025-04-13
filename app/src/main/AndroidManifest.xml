@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     package="com.example.huddleup">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -7,17 +9,37 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight">
-
-        <!-- Aktivitas utama -->
+        android:theme="@style/Theme.HuddleUp"
+        tools:targetApi="31">
         <activity android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventKu"
+            android:exported="false" />
+        <activity
+            android:name=".EventCheckedInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SiginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".detailEvent"
+            android:exported="false" />
+        <activity
+            android:name=".WishlistActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -25,15 +47,12 @@
         <!-- Aktivitas untuk form -->
         <activity android:name=".EventFormActivity" />
 
-        <!-- Nonaktifkan sementara activity yang tidak diperlukan -->
-        <!-- <activity android:name=".detailEvent" /> -->
-        <!-- <activity android:name=".EventCheckedInActivity" /> -->
-        <!-- <activity android:name=".LauncherActivity" /> -->
-        <!-- <activity android:name=".LoginActivity" /> -->
-        <!-- <activity android:name=".NotificationActivity" /> -->
-        <!-- <activity android:name=".SiginActivity" /> -->
-        <!-- <activity android:name=".WishlistActivity" /> -->
-
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
