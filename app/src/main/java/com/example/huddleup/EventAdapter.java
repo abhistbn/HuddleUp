@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -43,5 +44,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             tvEventName = itemView.findViewById(R.id.tvEventName);
             tvEventCount = itemView.findViewById(R.id.tvEventCount);
         }
+
     }
 }
