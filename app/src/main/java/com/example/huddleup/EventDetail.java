@@ -1,11 +1,11 @@
 package com.example.huddleup;
 
-public class Event {
+public class EventDetail {
     private String eventName;
     private int eventCount;
 
     // Constructor
-    public Event(String eventName, int eventCount) {
+    public EventDetail(String eventName, int eventCount) {
         this.eventName = eventName;
         this.eventCount = eventCount;
     }
