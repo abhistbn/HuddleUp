@@ -10,5 +10,10 @@
     <color name="netral">#F0F8FF</color>
     <color name="grey">#B0B0B0</color>
     <color name="purple">#BF00FF</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="darkGrey">#616161</color>
+    <color name="kindaBlack">#262626</color>
+    <color name="green">#ff99cc00</color>
+    <color name="kindaWhite">#FAFAFA</color>
 
 </resources>
