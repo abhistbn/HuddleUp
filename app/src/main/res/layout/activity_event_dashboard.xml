@@ -1,0 +1,41 @@
+ <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:padding="16dp">
+
+<!-- Judul Dashboard -->
+<TextView
+    android:id="@+id/tvDashboardTitle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Dashboard Event"
+    android:textSize="20sp"
+    android:paddingBottom="16dp"/>
+
+<!-- Button kategori pertama -->
+<Button
+    android:id="@+id/btnMusicEvents"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Music Events"/>
+
+<!-- Button kategori kedua -->
+<Button
+    android:id="@+id/btnSportsEvents"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Sports Events"
+    android:layout_marginTop="8dp"/>
+
+<!-- Button kategori ketiga -->
+<Button
+    android:id="@+id/btnWorkshopEvents"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Workshops"
+    android:layout_marginTop="8dp"/>
+
+</LinearLayout>
+
