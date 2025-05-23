@@ -67,4 +67,12 @@ public class Event implements Serializable {
     public void setWishlisted(boolean wishlisted) {
         isWishlisted = wishlisted;
     }
+
+    public int getEventName() {
+        return 0;
+    }
+
+    public char[] getEventCount() {
+        return new char[0];
+    }
 }

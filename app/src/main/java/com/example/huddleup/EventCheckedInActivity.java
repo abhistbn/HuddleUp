@@ -2,31 +2,20 @@ package com.example.huddleup;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 public class EventCheckedInActivity extends AppCompatActivity {
@@ -45,8 +34,8 @@ public class EventCheckedInActivity extends AppCompatActivity {
         TextView date = findViewById(R.id.txtTanggal);
         TextView time = findViewById(R.id.txtWaktu);
         TextView location = findViewById(R.id.txtLokasi);
-        ConstraintLayout ticketLayout = findViewById(R.id.ticketLayout);
-        Button saveButton = findViewById(R.id.btn_saveImg);
+        ticketLayout = findViewById(R.id.ticketLayout);
+        saveButton = findViewById(R.id.btn_saveImg);
 
         Intent intent = getIntent();
         title.setText(intent.getStringExtra("judul"));

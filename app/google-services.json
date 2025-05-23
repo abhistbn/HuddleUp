@@ -1,17 +1,28 @@
 {
   "project_info": {
+<<<<<<< HEAD
     "project_number": "601847698528",
     "project_id": "huddleup-a94c6",
     "storage_bucket": "huddleup-a94c6.firebasestorage.app"
+=======
+    "project_number": "391280179960",
+    "project_id": "huddleup-3fa5c",
+    "storage_bucket": "huddleup-3fa5c.firebasestorage.app"
+>>>>>>> 0a59466721d2765bbdfe5cd0907835eb4e5f1d5a
   },
   "client": [
     {
       "client_info": {
+<<<<<<< HEAD
         "mobilesdk_app_id": "1:601847698528:android:a645ec5437506d1db91f05",
+=======
+        "mobilesdk_app_id": "1:391280179960:android:61a3a872dbcda517ddd90d",
+>>>>>>> 0a59466721d2765bbdfe5cd0907835eb4e5f1d5a
         "android_client_info": {
           "package_name": "com.example.huddleup"
         }
       },
+<<<<<<< HEAD
       "oauth_client": [
         {
           "client_id": "601847698528-juqn55ii7hrvsfpjo50ugkrktto9d9p7.apps.googleusercontent.com",
@@ -21,16 +32,26 @@
       "api_key": [
         {
           "current_key": "AIzaSyAbZkxxrxWD3Xp6A4ILOWVb7jg1MLkyKTM"
+=======
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl4wRTKZc1p32x6ttkCEE7LuzW6bSZqbQ"
+>>>>>>> 0a59466721d2765bbdfe5cd0907835eb4e5f1d5a
         }
       ],
       "services": {
         "appinvite_service": {
+<<<<<<< HEAD
           "other_platform_oauth_client": [
             {
               "client_id": "601847698528-juqn55ii7hrvsfpjo50ugkrktto9d9p7.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
+=======
+          "other_platform_oauth_client": []
+>>>>>>> 0a59466721d2765bbdfe5cd0907835eb4e5f1d5a
         }
       }
     }

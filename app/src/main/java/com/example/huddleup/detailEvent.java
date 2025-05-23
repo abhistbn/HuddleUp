@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,18 +33,12 @@ public class detailEvent extends AppCompatActivity {
         txtAbout = findViewById(R.id.txtAbout);
         btnDaftar = findViewById(R.id.btn_daftar);
 
-//        Intent i = getIntent();
-//        String title = i.getStringExtra("title");
-//        String date = i.getStringExtra("date");
-//        String time = i.getStringExtra("time");
-//        String location = i.getStringExtra("location");
-//        String about = i.getStringExtra("about");
-
-        String title = "Tech Conference";
-        String date = "13 April 2025";
-        String time = "09.00 - 15:00";
-        String location = "Jakarta";
-        String about = "Acara kumpul bareng komunitas teknologi untuk sharing, networking, dan belajar bareng.";
+        Intent i = getIntent();
+        String title = i.getStringExtra("title");
+        String date = i.getStringExtra("date");
+        String time = i.getStringExtra("time");
+        String location = i.getStringExtra("location");
+        String about = i.getStringExtra("about");
 
 
         txtJudul.setText(title);
