@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "391280179960",
+    "project_id": "huddleup-3fa5c",
+    "storage_bucket": "huddleup-3fa5c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391280179960:android:61a3a872dbcda517ddd90d",
+        "android_client_info": {
+          "package_name": "com.example.huddleup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl4wRTKZc1p32x6ttkCEE7LuzW6bSZqbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
