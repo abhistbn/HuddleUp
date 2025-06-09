@@ -39,4 +39,13 @@ public class NotificationItem {
     public boolean isRead() {
         return isRead;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.Description = description;
+    }
+
 }

@@ -1,10 +1,17 @@
 package com.example.huddleup;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,8 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -55,7 +65,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         Log.d("DEBUG", "Total Notifikasi: " + notificationList.size());
 
-        adapter = new NotificationAdapter(notificationList);
+        adapter = new NotificationAdapter(this, notificationList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -72,6 +82,11 @@ public class NotificationActivity extends AppCompatActivity {
             }
         });
 
+        fabUpload.setOnClickListener(v -> {
+            showCreateNotificationDialog();
+        });
+
+
     }
 
     @Override
@@ -85,6 +100,32 @@ public class NotificationActivity extends AppCompatActivity {
             adapter.notifyItemInserted(1);
         }
     }
+
+    private void showCreateNotificationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_notification, null);
+        builder.setView(dialogView);
+
+        EditText etTitle = dialogView.findViewById(R.id.etTitle);
+        EditText etDescription = dialogView.findViewById(R.id.etDescription);
+        Button btnChooseImage = dialogView.findViewById(R.id.btnChooseImage); // kalau mau pakai gambar
+        ImageView ivPreview = dialogView.findViewById(R.id.ivPreview); // preview gambar
+
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String title = etTitle.getText().toString();
+            String desc = etDescription.getText().toString();
+            String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+            notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, title, desc, currentTime, false));
+            adapter.notifyItemInserted(notificationList.size() - 1);
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+
+
 
 
 }

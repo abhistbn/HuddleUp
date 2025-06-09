@@ -1,5 +1,7 @@
 package com.example.huddleup;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,6 +10,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,10 +22,14 @@ import java.util.List;
 public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<NotificationItem> notificationList;
+    private Context context;
 
-    public NotificationAdapter(List<NotificationItem> notificationList) {
+
+    public NotificationAdapter(Context context, List<NotificationItem> notificationList) {
+        this.context = context;
         this.notificationList = notificationList;
     }
+
 
     // Menentukan tipe view untuk setiap item (HEADER atau NOTIFICATION)
     @Override
@@ -53,6 +60,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).tvHeader.setText(notification.getTitle());
         }
+
+        holder.itemView.setOnLongClickListener(v -> {
+            showEditNotificationDialog(position);
+            return true;
+        });
+
     }
 
     @Override
@@ -119,4 +132,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
+
+    private void showEditNotificationDialog(int position) {
+        NotificationItem item = notificationList.get(position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_create_notification, null);
+        builder.setView(dialogView);
+
+        EditText etTitle = dialogView.findViewById(R.id.etTitle);
+        EditText etDescription = dialogView.findViewById(R.id.etDescription);
+
+        etTitle.setText(item.getTitle());
+        etDescription.setText(item.getDescription());
+
+        builder.setPositiveButton("Update", (dialog, which) -> {
+            item.setTitle(etTitle.getText().toString());
+            item.setDescription(etDescription.getText().toString());
+            notifyItemChanged(position);
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+
 }
