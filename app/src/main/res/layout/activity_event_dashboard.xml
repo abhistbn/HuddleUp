@@ -1,41 +1,40 @@
- <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:padding="16dp">
-
-<!-- Judul Dashboard -->
-<TextView
-    android:id="@+id/tvDashboardTitle"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Dashboard Event"
-    android:textSize="20sp"
-    android:paddingBottom="16dp"/>
-
-<!-- Button kategori pertama -->
-<Button
-    android:id="@+id/btnMusicEvents"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Music Events"/>
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-<!-- Button kategori kedua -->
-<Button
-    android:id="@+id/btnSportsEvents"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Sports Events"
-    android:layout_marginTop="8dp"/>
+    <!-- Judul di atas tengah -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kategori Event"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_primary"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
 
-<!-- Button kategori ketiga -->
-<Button
-    android:id="@+id/btnWorkshopEvents"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Workshops"
-    android:layout_marginTop="8dp"/>
+    <!-- RecyclerView di bawah judul -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEventList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvTitle"
+        android:layout_above="@+id/fabAddEvent"
+        />
 
-</LinearLayout>
-
+    <!-- FloatingActionButton di kanan bawah -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:contentDescription="Tambah Event"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/green_primary" />
+</RelativeLayout>

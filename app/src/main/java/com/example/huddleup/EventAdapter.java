@@ -5,43 +5,65 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    public List<Event> eventList;
+    private final List<Event> events;
+    private final OnItemDeleteListener onItemDeleteListener;
 
-    public EventAdapter(List<Event> eventList) {
-        this.eventList = eventList;
+    // Interface untuk callback hapus
+    public interface OnItemDeleteListener {
+        void onItemDelete(int position);
     }
 
+    public EventAdapter(List<Event> events, OnItemDeleteListener listener) {
+        this.events = events;
+        this.onItemDeleteListener = listener;
+    }
+
+    @NonNull
     @Override
-    public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
+    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_event, parent, false);
         return new EventViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(EventViewHolder holder, int position) {
-        Event event = eventList.get(position);
-        holder.tvEventName.setText(event.getEventName());
-        holder.tvEventCount.setText(String.valueOf(event.getEventCount()));
+    public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+        Event event = events.get(position);
+        holder.tvName.setText(event.getName());
+        holder.tvDate.setText(event.getDate());
+        holder.tvLocation.setText(event.getLocation());
+        holder.tvCategory.setText(event.getCategory());
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (onItemDeleteListener != null) {
+                onItemDeleteListener.onItemDelete(position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return eventList.size();
+        return events.size();
     }
 
-    public static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView tvEventName, tvEventCount;
+    static class EventViewHolder extends RecyclerView.ViewHolder {
+        TextView tvName, tvDate, tvLocation, tvCategory;
+        View btnDelete;
 
-        public EventViewHolder(View itemView) {
+        public EventViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvEventName = itemView.findViewById(R.id.tvEventName);
-            tvEventCount = itemView.findViewById(R.id.tvEventCount);
+            tvName = itemView.findViewById(R.id.tvEventName);
+            tvDate = itemView.findViewById(R.id.tvEventDate);
+            tvLocation = itemView.findViewById(R.id.tvEventLocation);
+            tvCategory = itemView.findViewById(R.id.tvEventCategory);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }
