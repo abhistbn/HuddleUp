@@ -15,14 +15,14 @@ import java.util.List;
 
 public class EventAdapterMyEvent extends RecyclerView.Adapter<EventAdapterMyEvent.ViewHolder> {
 
-    List<EventModel> list;
+    List<N_EventModel> list;
     OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(EventModel event);
+        void onItemClick(N_EventModel event);
     }
 
-    public EventAdapterMyEvent(List<EventModel> list, OnItemClickListener listener) {
+    public EventAdapterMyEvent(List<N_EventModel> list, OnItemClickListener listener) {
         this.list = list;
         this.listener = listener;
     }
@@ -42,7 +42,7 @@ public class EventAdapterMyEvent extends RecyclerView.Adapter<EventAdapterMyEven
             btniv_detail = itemView.findViewById(R.id.btniv_detail);
         }
 
-        public void bind(EventModel event, OnItemClickListener listener) {
+        public void bind(N_EventModel event, OnItemClickListener listener) {
             if (listener != null) {
                 itemView.setOnClickListener(v -> listener.onItemClick(event));
             }
@@ -51,13 +51,13 @@ public class EventAdapterMyEvent extends RecyclerView.Adapter<EventAdapterMyEven
 
     @Override
     public EventAdapterMyEvent.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.n_item_event, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EventModel event = list.get(position);
+        N_EventModel event = list.get(position);
         holder.txtJudul.setText(event.getJudul());
         holder.txtTanggal.setText(event.getTanggal());
         holder.txtWaktu.setText(event.getWaktu());
@@ -65,7 +65,7 @@ public class EventAdapterMyEvent extends RecyclerView.Adapter<EventAdapterMyEven
         holder.bind(event, listener);
 
         holder.btniv_detail.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), EventCheckedInActivity.class);
+            Intent intent = new Intent(holder.itemView.getContext(), N_EventCheckedInActivity.class);
             intent.putExtra("judul", event.getJudul());
             intent.putExtra("tanggal", event.getTanggal());
             intent.putExtra("waktu", event.getWaktu());

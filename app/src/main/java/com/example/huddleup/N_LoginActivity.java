@@ -1,10 +1,7 @@
 package com.example.huddleup;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class N_LoginActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword;
     Button btnLogin;
@@ -26,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.n_activity_login);
 
         etEmail = findViewById(R.id.etlo_email);
         etPassword = findViewById(R.id.etlo_password);
@@ -34,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         tvBack = findViewById(R.id.tvlo_Back);
 
         tvBack.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, LauncherActivity.class);
+            Intent intent = new Intent(N_LoginActivity.this, N_LauncherActivity.class);
             startActivity(intent);
         });
 
@@ -43,17 +40,17 @@ public class LoginActivity extends AppCompatActivity {
             String password = etPassword.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(LoginActivity.this, "Email dan Password tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(N_LoginActivity.this, "Email dan Password tidak boleh kosong", Toast.LENGTH_SHORT).show();
             } else {
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "Berhasil Log In", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LoginActivity.this, EventKu.class); // <-- FIXED
+                                Toast.makeText(N_LoginActivity.this, "Berhasil Log In", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(N_LoginActivity.this, N_EventKu.class); // <-- FIXED
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Toast.makeText(LoginActivity.this, "Email atau Password salah", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(N_LoginActivity.this, "Email atau Password salah", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -65,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent intent = new Intent(LoginActivity.this, EventKu.class);
+            Intent intent = new Intent(N_LoginActivity.this, N_EventKu.class);
             startActivity(intent);
             finish();
         }

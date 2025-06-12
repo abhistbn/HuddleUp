@@ -1,8 +1,8 @@
 package com.example.huddleup;
 
-public class EventModel {
+public class N_EventModel {
     private String Judul, Tanggal, Waktu, Lokasi, About;
-    public EventModel(String Judul, String Tanggal, String Waktu, String Lokasi, String About) {
+    public N_EventModel(String Judul, String Tanggal, String Waktu, String Lokasi, String About) {
         this.Judul = Judul;
         this.Tanggal = Tanggal;
         this.Waktu = Waktu;

@@ -1,7 +1,5 @@
 package com.example.huddleup;
 
-import com.example.huddleup.R;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
