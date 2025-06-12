@@ -3,77 +3,85 @@ package com.example.huddleup;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Button;
-
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import java.io.OutputStream;
+import java.util.Objects;
 
 public class N_EventCheckedInActivity extends AppCompatActivity {
 
     private ConstraintLayout ticketLayout;
-    private Button saveButton;
-    TextView txtJudul, txtTanggal, txtWaktu, txtLokasi;
-    private static final int STORAGE_PERMISSION_CODE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.n_activity_event_checked_in);
 
-        TextView title = findViewById(R.id.txtJudul);
-        TextView date = findViewById(R.id.txtTanggal);
-        TextView time = findViewById(R.id.txtWaktu);
-        TextView location = findViewById(R.id.txtLokasi);
+        TextView txtJudul = findViewById(R.id.txtJudul);
+        TextView txtTanggal = findViewById(R.id.txtTanggal);
+        TextView txtWaktu = findViewById(R.id.txtWaktu);
+        TextView txtLokasi = findViewById(R.id.txtLokasi);
         ticketLayout = findViewById(R.id.ticketLayout);
-        saveButton = findViewById(R.id.btn_saveImg);
+        Button saveButton = findViewById(R.id.btn_saveImg);
 
         Intent intent = getIntent();
-        title.setText(intent.getStringExtra("judul"));
-        date.setText(intent.getStringExtra("tanggal"));
-        time.setText(intent.getStringExtra("waktu"));
-        location.setText(intent.getStringExtra("lokasi"));
-
+        if (intent != null) {
+            txtJudul.setText(intent.getStringExtra("judul"));
+            txtTanggal.setText(intent.getStringExtra("tanggal"));
+            txtWaktu.setText(intent.getStringExtra("waktu"));
+            txtLokasi.setText(intent.getStringExtra("lokasi"));
+        }
 
         saveButton.setOnClickListener(v -> saveTicketAsImage());
     }
 
     private void saveTicketAsImage() {
-        ticketLayout.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(ticketLayout.getDrawingCache());
-        ticketLayout.setDrawingCacheEnabled(false);
+        Bitmap bitmap = Bitmap.createBitmap(ticketLayout.getWidth(), ticketLayout.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        Drawable bgDrawable = ticketLayout.getBackground();
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas);
+        } else {
+            canvas.drawColor(Color.WHITE);
+        }
+        ticketLayout.draw(canvas);
+
+        OutputStream fos = null;
+        Uri imageUri = null;
+        String fileName = "ticket_" + System.currentTimeMillis() + ".png";
 
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, "ticket_" + System.currentTimeMillis() + ".png");
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/EventTicket");
-
-        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/HuddleUpTickets");
 
         try {
-            OutputStream outStream = getContentResolver().openOutputStream(uri);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            if (outStream != null) outStream.close();
-            Toast.makeText(this, "Tiket berhasil disimpan di Galeri 🥳", Toast.LENGTH_SHORT).show();
+            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            fos = getContentResolver().openOutputStream(Objects.requireNonNull(imageUri));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            Toast.makeText(this, "Tiket berhasil disimpan di Galeri! 🥳", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Gagal menyimpan tiket 😢", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Gagal menyimpan tiket. 😢", Toast.LENGTH_SHORT).show();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 }
-

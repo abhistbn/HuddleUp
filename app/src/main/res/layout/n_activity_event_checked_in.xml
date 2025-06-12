@@ -5,9 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:id="@+id/ticketLayout"
-    android:background="@drawable/pudar_balik">
+    android:background="@color/netral"
+    tools:context=".N_EventCheckedInActivity">
 
     <LinearLayout
         android:id="@+id/header"
@@ -23,203 +22,190 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="70dp"
             android:text="@string/back"
             android:textSize="18sp"
             android:fontFamily="@font/poppinsmedium"
-            android:textColor="@color/white" />
+            android:textColor="@color/teal_200" />
 
         <TextView
             android:id="@+id/tv_de"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="25dp"
             android:padding="2dp"
             android:gravity="center"
-            android:textSize="22sp"
-            android:text="Event Ticket"
-            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Event Details"
+            android:textColor="@color/teal_200"
             android:fontFamily="@font/poppinsmedium"/>
-        </LinearLayout>
+    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ticketLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/n_ticket_bg"
+        android:elevation="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="4dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginTop="30dp">
-        <FrameLayout
-            android:layout_width="300dp"
-            android:layout_height="300dp">
+        <TextView
+            android:id="@+id/txtJudul"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/poppinsmedium"
+            android:gravity="center"
+            android:textColor="@color/toscaTua"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="International Music Festival" />
+
         <ImageView
             android:id="@+id/qrCodeImage"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="40dp"
-            android:src="@drawable/qrcode" />
-        </FrameLayout>
-        </androidx.cardview.widget.CardView>
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/qrcode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtJudul" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrCodeImage"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="50dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Event Name"
-                android:textSize="18sp"
-                android:textColor="@color/grey"
-                android:fontFamily="@font/poppinsmedium"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Waktu"
-                android:textSize="18sp"
-                android:textColor="@color/grey"
-                android:fontFamily="@font/poppinsmedium"/>
-        </LinearLayout>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/n_ticket_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/qrCodeImage" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="0dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="vertical"
+            android:paddingTop="24dp"
+            android:paddingBottom="32dp"
+            app:layout_constraintEnd_toEndOf="@id/divider"
+            app:layout_constraintStart_toStartOf="@id/divider"
+            app:layout_constraintTop_toBottomOf="@id/divider">
 
-            <TextView
-                android:id="@+id/txtJudul"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Lorem ipsum"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppinsmedium"/>
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtWaktu"
-                android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppinsmedium"
+                        android:text="DATE"
+                        android:textColor="@color/teal_700"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/txtTanggal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppinsmedium"
+                        android:textColor="@color/toscaTua"
+                        android:textSize="16sp"
+                        tools:text="12 June 2025" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppinsmedium"
+                        android:text="TIME"
+                        android:textColor="@color/teal_700"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/txtWaktu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppinsmedium"
+                        android:textColor="@color/toscaTua"
+                        android:textSize="16sp"
+                        tools:text="09.00 WIB" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="00.00 - 00.00"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppinsmedium"/>
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:text="VENUE"
+                    android:textColor="@color/teal_700"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtLokasi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:textColor="@color/toscaTua"
+                    android:textSize="16sp"
+                    tools:text="Online via Zoom" />
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="50dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Tanggal"
-                android:textSize="18sp"
-                android:textColor="@color/grey"
-                android:fontFamily="@font/poppinsmedium"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Tempat"
-                android:textColor="@color/grey"
-                android:textSize="18sp"
-                android:fontFamily="@font/poppinsmedium"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="0dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <TextView
-                android:id="@+id/txtTanggal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="XX XX 20XX"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppinsmedium"/>
-
-            <TextView
-                android:id="@+id/txtLokasi"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Zoom Meeting"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/poppinsmedium"/>
-        </LinearLayout>
-    </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/btn_saveImg"
-        android:layout_width="350dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="800dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_siginsigin"
+        android:drawableStart="@drawable/n_ic_download"
+        android:drawablePadding="12dp"
+        android:drawableTint="@color/white"
+        android:elevation="4dp"
         android:fontFamily="@font/poppinsmedium"
-        android:text="Save Image"
-        android:elevation="8dp"
-        android:textSize="18sp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Save Ticket"
+        android:textAllCaps="false"
         android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
