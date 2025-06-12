@@ -17,7 +17,7 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
     private final Context context;
 
     public interface OnMyEventListener {
-        void onBatalClick(int position);
+        void onBatalClick(String eventKey);
         void onLihatTiketClick(N_EventModel event);
     }
 
@@ -45,7 +45,7 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
 
         holder.btnBatal.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onBatalClick(holder.getAdapterPosition());
+                listener.onBatalClick(event.getKey());
             }
         });
 
