@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-public class RealPathUtil {
+public class Z_RealPathUtil {
     public static String getRealPath(Context context, Uri uri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);

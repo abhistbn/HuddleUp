@@ -22,7 +22,7 @@ public class EventFormActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_form);
+        setContentView(R.layout.z_activity_event_form);
 
         edtEventName = findViewById(R.id.edtEventName);
         btnSave = findViewById(R.id.btnSave);
