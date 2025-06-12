@@ -10,24 +10,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventKu extends AppCompatActivity {
+public class N_EventKu extends AppCompatActivity {
 
-    static ArrayList<EventModel> eventKuList = new ArrayList<>();
+    static ArrayList<N_EventModel> eventKuList = new ArrayList<>();
     RecyclerView recyclerView;
     EventAdapterMyEvent adapter;
-    List<EventModel> eventList;
+    List<N_EventModel> eventList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_ku);
+        setContentView(R.layout.n_activity_event_ku);
 
         recyclerView = findViewById(R.id.recyclerEventKu);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Intent i = getIntent();
 //        if (i != null && i.hasExtra("title")) {
-//            EventModel event = new EventModel(
+//            N_EventModel event = new N_EventModel(
 //                    i.getStringExtra("title"),
 //                    i.getStringExtra("date"),
 //                    i.getStringExtra("time"),
@@ -37,9 +37,9 @@ public class EventKu extends AppCompatActivity {
 //            eventKuList.add(event);
 //        }
 
-        eventKuList.add(new EventModel("Tech Conference", "13 April 2025", "09.00 - 15.00", "Jakarta", "Konferensi teknologi tahunan"));
-        eventKuList.add(new EventModel("UI/UX Workshop", "20 April 2025", "10.00 - 12.00", "Online (Zoom)", "Belajar dasar desain UI/UX"));
-        eventKuList.add(new EventModel("Startup Pitch", "27 April 2025", "13.00 - 16.00", "Bandung", "Presentasi ide startup oleh mahasiswa"));
+        eventKuList.add(new N_EventModel("Tech Conference", "13 April 2025", "09.00 - 15.00", "Jakarta", "Konferensi teknologi tahunan"));
+        eventKuList.add(new N_EventModel("UI/UX Workshop", "20 April 2025", "10.00 - 12.00", "Online (Zoom)", "Belajar dasar desain UI/UX"));
+        eventKuList.add(new N_EventModel("Startup Pitch", "27 April 2025", "13.00 - 16.00", "Bandung", "Presentasi ide startup oleh mahasiswa"));
 
         adapter = new EventAdapterMyEvent (eventKuList, null);
         recyclerView.setAdapter(adapter);

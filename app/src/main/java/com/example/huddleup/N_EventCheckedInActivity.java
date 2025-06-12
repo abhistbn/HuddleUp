@@ -18,7 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.io.OutputStream;
 
-public class EventCheckedInActivity extends AppCompatActivity {
+public class N_EventCheckedInActivity extends AppCompatActivity {
 
     private ConstraintLayout ticketLayout;
     private Button saveButton;
@@ -28,7 +28,7 @@ public class EventCheckedInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_checked_in);
+        setContentView(R.layout.n_activity_event_checked_in);
 
         TextView title = findViewById(R.id.txtJudul);
         TextView date = findViewById(R.id.txtTanggal);

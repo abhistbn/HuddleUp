@@ -7,14 +7,14 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LauncherActivity extends AppCompatActivity {
+public class N_LauncherActivity extends AppCompatActivity {
 
     Button btnl_SigIn, btnl_LogIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launcher);
+        setContentView(R.layout.n_activity_launcher);
 
         btnl_SigIn = findViewById(R.id.btnl_SigIn);
         btnl_LogIn = findViewById(R.id.btnl_LogIn);
@@ -22,7 +22,7 @@ public class LauncherActivity extends AppCompatActivity {
         btnl_LogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LauncherActivity.this, LoginActivity.class);
+                Intent intent = new Intent(N_LauncherActivity.this, N_LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -30,7 +30,7 @@ public class LauncherActivity extends AppCompatActivity {
         btnl_SigIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LauncherActivity.this, SiginActivity.class);
+                Intent intent = new Intent(N_LauncherActivity.this, N_SigninActivity.class);
                 startActivity(intent);
             }
         });

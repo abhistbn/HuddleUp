@@ -7,16 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class detailEvent extends AppCompatActivity {
+public class N_detailEvent extends AppCompatActivity {
 
     TextView txtJudul, txtTanggal, txtWaktu, txtLokasi, txtAbout;
     Button btnDaftar;
@@ -24,7 +15,7 @@ public class detailEvent extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_event);
+        setContentView(R.layout.n_activity_detail_event);
 
         txtJudul = findViewById(R.id.txtJudul);
         txtTanggal = findViewById(R.id.txtTanggal);
@@ -48,7 +39,7 @@ public class detailEvent extends AppCompatActivity {
         txtAbout.setText(about);
 
         btnDaftar.setOnClickListener(v -> {
-            Intent intent = new Intent(detailEvent.this, EventKu.class);
+            Intent intent = new Intent(N_detailEvent.this, N_EventKu.class);
             intent.putExtra("title", title);
             intent.putExtra("date", date);
             intent.putExtra("time", time);

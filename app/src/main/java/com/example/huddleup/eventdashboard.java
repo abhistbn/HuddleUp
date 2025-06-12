@@ -11,7 +11,7 @@
 //public class eventdashboard extends AppCompatActivity {
 //
 //    private RecyclerView recyclerView;
-//    private EventAdapter eventAdapter;
+//    private N_EventAdapter eventAdapter;
 //
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@
 //        List<Event> events = getEventData();
 //
 //        // Inisialisasi adapter dan set ke RecyclerView
-//        eventAdapter = new EventAdapter(events);
+//        eventAdapter = new N_EventAdapter(events);
 //        recyclerView.setAdapter(eventAdapter);
 //    }
 //

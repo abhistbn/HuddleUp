@@ -10,17 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+public class N_EventAdapter extends RecyclerView.Adapter<N_EventAdapter.EventViewHolder> {
 
     public List<Event> eventList;
 
-    public EventAdapter(List<Event> eventList) {
+    public N_EventAdapter(List<Event> eventList) {
         this.eventList = eventList;
     }
 
     @Override
     public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.n_item_event, parent, false);
         return new EventViewHolder(view);
     }
 

@@ -19,22 +19,22 @@
         <activity android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".EventKu"
+            android:name=".N_EventKu"
             android:exported="false" />
         <activity
-            android:name=".EventCheckedInActivity"
+            android:name=".N_EventCheckedInActivity"
             android:exported="false" />
         <activity
-            android:name=".SiginActivity"
+            android:name=".N_SigninActivity"
             android:exported="false" />
         <activity
-            android:name=".detailEvent"
+            android:name=".N_detailEvent"
             android:exported="false" />
         <activity
             android:name=".WishlistActivity"
             android:exported="false" />
         <activity
-            android:name=".LauncherActivity"
+            android:name=".N_LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,7 +47,7 @@
         <activity android:name=".EventFormActivity" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".N_LoginActivity"
             android:exported="false" />
         <activity
             android:name=".NotificationActivity"
