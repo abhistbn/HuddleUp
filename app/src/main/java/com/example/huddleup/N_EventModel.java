@@ -1,43 +1,69 @@
 package com.example.huddleup;
 
+import com.google.firebase.database.Exclude;
+
 public class N_EventModel {
-    private String Judul, Tanggal, Waktu, Lokasi, About;
+    @Exclude
+    private String key;
+
+    private String judul, tanggal, waktu, lokasi, about;
+
+    public N_EventModel() {
+    }
+
     public N_EventModel(String Judul, String Tanggal, String Waktu, String Lokasi, String About) {
-        this.Judul = Judul;
-        this.Tanggal = Tanggal;
-        this.Waktu = Waktu;
-        this.Lokasi = Lokasi;
-        this.About = About;
+        this.judul = Judul;
+        this.tanggal = Tanggal;
+        this.waktu = Waktu;
+        this.lokasi = Lokasi;
+        this.about = About;
     }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getJudul() {
-        return Judul;
+        return judul;
     }
-    public void setJudul(String Judul) {
-        this.Judul = Judul;
+
+    public void setJudul(String judul) {
+        this.judul = judul;
     }
+
     public String getTanggal() {
-        return Tanggal;
+        return tanggal;
     }
-    public void setTanggal(String Tanggal) {
-        this.Tanggal = Tanggal;
+
+    public void setTanggal(String tanggal) {
+        this.tanggal = tanggal;
     }
+
     public String getWaktu() {
-        return Waktu;
+        return waktu;
     }
-    public void setWaktu(String Waktu) {
-        this.Waktu = Waktu;
+
+    public void setWaktu(String waktu) {
+        this.waktu = waktu;
     }
+
     public String getLokasi() {
-        return Lokasi;
+        return lokasi;
     }
-    public void setLokasi(String Lokasi) {
-        this.Lokasi = Lokasi;
+
+    public void setLokasi(String lokasi) {
+        this.lokasi = lokasi;
     }
 
     public String getAbout() {
-        return About;
+        return about;
     }
-    public void setAbout(String About) {
-        this.About = About;
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 }
