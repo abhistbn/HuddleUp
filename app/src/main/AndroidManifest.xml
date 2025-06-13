@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.huddleup">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
         android:allowBackup="true"
@@ -16,42 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HuddleUp"
         tools:targetApi="31">
-        <activity android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".N_EventKu"
-            android:exported="false" />
-        <activity
-            android:name=".N_EventCheckedInActivity"
-            android:exported="false" />
-        <activity
-            android:name=".N_SigninActivity"
-            android:exported="false" />
-        <activity
-            android:name=".N_detailEvent"
-            android:exported="false" />
-        <activity
-            android:name=".WishlistActivity"
-            android:exported="false" />
-        <activity
-            android:name=".N_LauncherActivity"
-            android:exported="true">
+
+        <activity android:name=".Z_MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Aktivitas untuk form -->
-        <activity android:name=".EventFormActivity" />
+        <activity
+            android:name=".N_detailEvent"
+            android:exported="false" />
 
-        <activity
-            android:name=".N_LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
