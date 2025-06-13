@@ -54,9 +54,21 @@
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="10"
-        tools:listitem="@layout/item_event"/>
+        tools:listitem="@layout/n_item_event"/>
 
-
-
+    <TextView
+        android:id="@+id/tv_empty_my_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven't checked in to any events."
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppinsmedium"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/recyclerEventKu"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerEventKu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- Judul -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
@@ -16,156 +14,67 @@
         android:padding="16dp"
         android:background="@drawable/background"
         android:textColor="@color/black"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"/>
 
-    <!-- Recycler View -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerNotifikasi"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_below="@id/tvTitle"
-        android:layout_above="@+id/bottomNavbarContainer"
         android:background="@color/white"
-        android:padding="8dp" />
+        android:layout_above="@id/bottomNavbar"
+        android:padding="8dp"/>
 
-    <!-- Kontainer Bottom Navbar -->
-    <RelativeLayout
-        android:id="@+id/bottomNavbarContainer"
+    <LinearLayout
+        android:id="@+id/bottomNavbar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:background="#339999">
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:background="#EEEEEE">
 
-        <LinearLayout
-            android:id="@+id/bottomNavbar"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:weightSum="4"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:text="Home"
+            android:textSize="12dp"
+            android:drawableTop="@drawable/ic_homepage"
+            android:gravity="center"
+            android:paddingTop="8dp"/>
 
-            <!-- Home -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+        <Button
+            android:id="@+id/btnNotifikasi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Notifikasi"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_notification"
+            android:enabled="false"
+            android:gravity="center"
+            android:textSize="12dp" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_homepage"
-                    app:tint="#FFFFFF" />
+        <Button
+            android:id="@+id/btnDashboard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Dashboard"
+            android:drawableTop="@drawable/ic_dashboard"
+            android:gravity="center"
+            android:textSize="12dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Home"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Notifikasi (selected) -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <!-- Bungkus icon + teks dalam 1 FrameLayout, lalu beri background -->
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_selected_notif"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_gravity="center">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center">
-
-                        <!-- Icon notifikasi -->
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_notification"
-                            app:tint="#339999"
-                            android:layout_gravity="center"/>
-
-                        <!-- Teks Notifikasi -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Notifikasi"
-                            android:textColor="#339999"
-                            android:textSize="12sp"
-                            android:layout_gravity="center"/>
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_dashboard"
-                    app:tint="#FFFFFF" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dashboard"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Profil -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_pfp"
-                    app:tint="#FFFFFF" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Profil"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
-
-    <!-- FAB Upload (pojok kanan bawah) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabUpload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_upload"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:layout_above="@id/bottomNavbarContainer" />
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Profile"
+            android:drawableTop="@drawable/ic_pfp"
+            android:gravity="center"
+            android:textSize="12dp" />
+    </LinearLayout>
 
 </RelativeLayout>
