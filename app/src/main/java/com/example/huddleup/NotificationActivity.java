@@ -13,12 +13,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,54 +46,147 @@ public class NotificationActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerNotifikasi);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Isi data notifikasi
-        notificationList = new ArrayList<>();
-        // Grup: Hari Ini
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Hari Ini", "", "", false));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Event Baru!", "Upcoming Concert dari FISIP!", "1 jam lalu", false));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Pameran Startup Mahasiswa", "Datang dan dukung inovasi teman-teman di Samantha Krida!", "1 jam lalu", false));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Lomba Fotografi", "Capture UB Moment, hadiah total jutaan rupiah!", "3 jam lalu", false));
-
-        // Grup: Kemarin
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Kemarin", "", "", false));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Diskusi Publik", "Tema: 'Masa Depan Demokrasi Digital', di Gedung Widyaloka.", "Kemarin", true));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Donor Darah", "PMI hadir di FKUB, sukses kumpulkan 200 kantong darah!", "Kemarin", false));
-
-
-        // Grup: 7 Hari Terakhir
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "7 Hari Terakhir", "", "", false));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "UB Bersih-bersih", "Aksi peduli lingkungan: bersih kampus bareng!", "2 hari lalu", false));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Pemilihan BEM", "Debat kandidat BEM Universitas berlangsung panas!", "4 hari lalu", true));
-        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Pemutaran Film", "Film pendek karya mahasiswa FIB tayang di Perpustakaan Pusat.", "6 hari lalu", false));
-
-
-
-
-        Log.d("DEBUG", "Total Notifikasi: " + notificationList.size());
-
-        adapter = new NotificationAdapter(this, notificationList);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        // Tambahkan ItemTouchHelper ke RecyclerView setelah adapter disetting
-        NotificationAdapter.attachItemTouchHelper(recyclerView, adapter);
-
-        FloatingActionButton fabUpload = findViewById(R.id.fabUpload);
-        fabUpload.setOnClickListener(new View.OnClickListener() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("events");
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, 100);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                notificationList.clear();
+
+                // Grupkan notifikasi berdasarkan waktu (Hari Ini, Kemarin, dst)
+                List<NotificationItem> hariIniList = new ArrayList<>();
+                List<NotificationItem> kemarinList = new ArrayList<>();
+                List<NotificationItem> mingguIniList = new ArrayList<>();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Z_EventP2 event = dataSnapshot.getValue(Z_EventP2.class);
+                    if (event != null) {
+                        String waktu = event.getDate(); // Formatnya harus kamu pastikan, misalnya "yyyy-MM-dd"
+
+                        // Tentukan kategori waktu
+                        String kategoriWaktu = getKategoriTanggal(waktu);
+
+                        String timeString = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                        NotificationItem notif = new NotificationItem(
+                                NotificationItem.TYPE_NOTIFICATION,
+                                "Event Baru: " + event.getName(),
+                                event.getAbout(),
+                                timeString,
+                                false
+                        );
+
+                        switch (kategoriWaktu) {
+                            case "Hari Ini":
+                                hariIniList.add(notif);
+                                break;
+                            case "Kemarin":
+                                kemarinList.add(notif);
+                                break;
+                            case "7 Hari Terakhir":
+                                mingguIniList.add(notif);
+                                break;
+                        }
+                    }
+                }
+
+                // Tambahkan ke notifikasi utama
+                if (!hariIniList.isEmpty()) {
+                    notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Hari Ini", "", "", false));
+                    notificationList.addAll(hariIniList);
+                }
+                if (!kemarinList.isEmpty()) {
+                    notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Kemarin", "", "", false));
+                    notificationList.addAll(kemarinList);
+                }
+                if (!mingguIniList.isEmpty()) {
+                    notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "7 Hari Terakhir", "", "", false));
+                    notificationList.addAll(mingguIniList);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FIREBASE", "Database Error: " + error.getMessage());
             }
         });
 
-        fabUpload.setOnClickListener(v -> {
-            showCreateNotificationDialog();
-        });
+//
+//
+//        // Isi data notifikasi
+//        notificationList = new ArrayList<>();
+//        // Grup: Hari Ini
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Hari Ini", "", "", false));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Event Baru!", "Upcoming Concert dari FISIP!", "1 jam lalu", false));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Pameran Startup Mahasiswa", "Datang dan dukung inovasi teman-teman di Samantha Krida!", "1 jam lalu", false));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Lomba Fotografi", "Capture UB Moment, hadiah total jutaan rupiah!", "3 jam lalu", false));
+//
+//        // Grup: Kemarin
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Kemarin", "", "", false));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Diskusi Publik", "Tema: 'Masa Depan Demokrasi Digital', di Gedung Widyaloka.", "Kemarin", true));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Donor Darah", "PMI hadir di FKUB, sukses kumpulkan 200 kantong darah!", "Kemarin", false));
+//
+//
+//        // Grup: 7 Hari Terakhir
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_HEADER, "7 Hari Terakhir", "", "", false));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "UB Bersih-bersih", "Aksi peduli lingkungan: bersih kampus bareng!", "2 hari lalu", false));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Pemilihan BEM", "Debat kandidat BEM Universitas berlangsung panas!", "4 hari lalu", true));
+//        notificationList.add(new NotificationItem(NotificationItem.TYPE_NOTIFICATION, "Pemutaran Film", "Film pendek karya mahasiswa FIB tayang di Perpustakaan Pusat.", "6 hari lalu", false));
+//
+//
+//
+//
+//        Log.d("DEBUG", "Total Notifikasi: " + notificationList.size());
+//
+//        adapter = new NotificationAdapter(this, notificationList);
+//        recyclerView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//
+//        // Tambahkan ItemTouchHelper ke RecyclerView setelah adapter disetting
+//        NotificationAdapter.attachItemTouchHelper(recyclerView, adapter);
+//
+//        FloatingActionButton fabUpload = findViewById(R.id.fabUpload);
+//        fabUpload.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Intent.ACTION_PICK);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, 100);
+//            }
+//        });
+//
+//        fabUpload.setOnClickListener(v -> {
+//            showCreateNotificationDialog();
+//        });
 
 
     }
+
+    private String getKategoriTanggal(String tanggalEvent) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date eventDate = sdf.parse(tanggalEvent);
+            Date today = new Date();
+
+            long diff = today.getTime() - eventDate.getTime();
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+            if (diffDays == 0) {
+                return "Hari Ini";
+            } else if (diffDays == 1) {
+                return "Kemarin";
+            } else if (diffDays <= 7) {
+                return "7 Hari Terakhir";
+            } else {
+                return "Lainnya";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Lainnya";
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -109,7 +208,7 @@ public class NotificationActivity extends AppCompatActivity {
         EditText etTitle = dialogView.findViewById(R.id.etTitle);
         EditText etDescription = dialogView.findViewById(R.id.etDescription);
         Button btnChooseImage = dialogView.findViewById(R.id.btnChooseImage); // kalau mau pakai gambar
-        ImageView ivPreview = dialogView.findViewById(R.id.ivPreview); // preview gambar
+        ImageView ivPreview = dialogView.findViewById(R.id.ivDialogPreview); // preview gambar
 
         builder.setPositiveButton("Add", (dialog, which) -> {
             String title = etTitle.getText().toString();
