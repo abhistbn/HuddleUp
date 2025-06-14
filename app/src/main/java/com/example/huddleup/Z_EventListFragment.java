@@ -1,5 +1,6 @@
 package com.example.huddleup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 public class Z_EventListFragment extends Fragment {
 
     private RecyclerView eventRecyclerView;
+    private Button btnGoToMyEvents;
     private Z_EventAdapterP2 eventAdapter;
     private ArrayList<Z_EventP2> eventList;
     private DatabaseReference databaseReference;
@@ -36,6 +39,7 @@ public class Z_EventListFragment extends Fragment {
 
         eventRecyclerView = view.findViewById(R.id.eventRecyclerViewFragment);
         FloatingActionButton fabAddEvent = view.findViewById(R.id.fabAddEvent);
+        btnGoToMyEvents = view.findViewById(R.id.btnGoToMyEvents);
 
         eventList = new ArrayList<>();
         eventAdapter = new Z_EventAdapterP2(getContext(), eventList);
@@ -49,6 +53,11 @@ public class Z_EventListFragment extends Fragment {
             if (getActivity() instanceof Z_MainActivity) {
                 ((Z_MainActivity) getActivity()).showEventFormFragment(null);
             }
+        });
+
+        btnGoToMyEvents.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), N_EventKu.class);
+            startActivity(intent);
         });
 
         eventAdapter.setOnItemContextClickListener((itemView, position) -> {

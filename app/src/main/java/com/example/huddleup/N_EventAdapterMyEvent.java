@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMyEvent.MyEventViewHolder> {
@@ -43,6 +45,12 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
         holder.txtWaktu.setText(event.getWaktu());
         holder.txtLokasi.setText(event.getLokasi());
 
+        Glide.with(context)
+                .load(event.getImageUrl())
+                .placeholder(R.drawable.event)
+                .error(R.drawable.event)
+                .into(holder.imgEvent);
+
         holder.btnBatal.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onBatalClick(event.getKey());
@@ -64,6 +72,7 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
     public static class MyEventViewHolder extends RecyclerView.ViewHolder {
         TextView txtJudul, txtTanggal, txtWaktu, txtLokasi;
         Button btnBatal, btnLihatTiket;
+        ImageView imgEvent;
 
         public MyEventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +82,7 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
             txtLokasi = itemView.findViewById(R.id.txtLokasi);
             btnBatal = itemView.findViewById(R.id.btniv_batal);
             btnLihatTiket = itemView.findViewById(R.id.btniv_detail);
+            imgEvent = itemView.findViewById(R.id.imgEvent);
         }
     }
 }

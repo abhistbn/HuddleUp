@@ -11,7 +11,7 @@
     <View
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="580dp"
+        android:layout_height="620dp"
         android:background="@drawable/sigin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,12 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="290dp"
         android:text="@string/back"
         android:textSize="20sp"
         android:fontFamily="@font/poppinsmedium"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,27 +70,14 @@
         app:layout_constraintStart_toStartOf="@+id/header"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-    <EditText
-        android:id="@+id/ets_name"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:background="@drawable/btn_inputsigin"
-        android:layout_marginTop="40dp"
-        android:paddingLeft="30dp"
-        android:hint="Enter full name"
-        android:inputType="text"
-        android:textColor="@color/black"
-        android:textColorHint="@color/grey"
-        app:layout_constraintEnd_toEndOf="@id/header"
-        app:layout_constraintStart_toStartOf="@+id/header"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"/>
+    <!-- Kolom Nama Dihapus -->
 
     <EditText
         android:id="@+id/ets_email"
         android:layout_width="350dp"
         android:layout_height="60dp"
         android:background="@drawable/btn_inputsigin"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:paddingLeft="30dp"
         android:hint="Enter email"
         android:inputType="textEmailAddress"
@@ -100,7 +85,7 @@
         android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="@id/header"
         app:layout_constraintStart_toStartOf="@+id/header"
-        app:layout_constraintTop_toBottomOf="@+id/ets_name"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView8"/>
 
     <EditText
         android:id="@+id/ets_password"
@@ -117,12 +102,42 @@
         app:layout_constraintStart_toStartOf="@+id/header"
         app:layout_constraintTop_toBottomOf="@+id/ets_email"/>
 
+    <!-- Kolom Verifikasi Password Ditambahkan -->
+    <EditText
+        android:id="@+id/ets_confirm_password"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:background="@drawable/btn_inputsigin"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="30dp"
+        android:hint="Verify password"
+        android:inputType="textPassword"
+        android:textColor="@color/black"
+        android:textColorHint="@color/grey"
+        app:layout_constraintEnd_toEndOf="@id/header"
+        app:layout_constraintStart_toStartOf="@+id/header"
+        app:layout_constraintTop_toBottomOf="@+id/ets_password"/>
+
+    <TextView
+        android:id="@+id/forgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password ?"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="230dp"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/tosca"
+        app:layout_constraintTop_toBottomOf="@id/ets_confirm_password"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
     <Button
         android:id="@+id/btns_sigin"
         android:layout_width="350dp"
         android:layout_height="60dp"
         android:background="@drawable/btn_siginsigin"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:text="Get Started"
         android:textColor="@color/white"
         android:textAllCaps="true"
@@ -131,20 +146,5 @@
         app:layout_constraintEnd_toEndOf="@id/header"
         app:layout_constraintStart_toStartOf="@+id/header"
         app:layout_constraintTop_toBottomOf="@+id/forgot"/>
-
-    <TextView
-        android:id="@+id/forgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forgot Password ?"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="230dp"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:textColor="@color/tosca"
-        app:layout_constraintTop_toBottomOf="@id/ets_password"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

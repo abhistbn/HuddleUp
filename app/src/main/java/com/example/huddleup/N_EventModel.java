@@ -6,17 +6,23 @@ public class N_EventModel {
     @Exclude
     private String key;
 
-    private String judul, tanggal, waktu, lokasi, about;
+    private String name;
+    private String date;
+    private String time;
+    private String location;
+    private String about;
+    private String imageUrl;
 
     public N_EventModel() {
     }
 
-    public N_EventModel(String Judul, String Tanggal, String Waktu, String Lokasi, String About) {
-        this.judul = Judul;
-        this.tanggal = Tanggal;
-        this.waktu = Waktu;
-        this.lokasi = Lokasi;
-        this.about = About;
+    public N_EventModel(String name, String date, String time, String location, String about, String imageUrl) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+        this.location = location;
+        this.about = about;
+        this.imageUrl = imageUrl;
     }
 
     public String getKey() {
@@ -27,36 +33,36 @@ public class N_EventModel {
         this.key = key;
     }
 
-    public String getJudul() {
-        return judul;
+    public String getName() {
+        return name;
     }
 
-    public void setJudul(String judul) {
-        this.judul = judul;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTanggal() {
-        return tanggal;
+    public String getDate() {
+        return date;
     }
 
-    public void setTanggal(String tanggal) {
-        this.tanggal = tanggal;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getWaktu() {
-        return waktu;
+    public String getTime() {
+        return time;
     }
 
-    public void setWaktu(String waktu) {
-        this.waktu = waktu;
+    public void setTime(String time) {
+        this.time = time;
     }
 
-    public String getLokasi() {
-        return lokasi;
+    public String getLocation() {
+        return location;
     }
 
-    public void setLokasi(String lokasi) {
-        this.lokasi = lokasi;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getAbout() {
@@ -65,5 +71,33 @@ public class N_EventModel {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @Exclude
+    public String getJudul() {
+        return name;
+    }
+
+    @Exclude
+    public String getTanggal() {
+        return date;
+    }
+
+    @Exclude
+    public String getWaktu() {
+        return time;
+    }
+
+    @Exclude
+    public String getLokasi() {
+        return location;
     }
 }
