@@ -28,6 +28,7 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
     private ArrayList<N_EventModel> eventKuList;
     private TextView tvEmptyMessage;
     private DatabaseReference dbEvents;
+    private TextView tvde_Back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
         recyclerView = findViewById(R.id.recyclerEventKu);
         tvEmptyMessage = findViewById(R.id.tv_empty_my_events);
         dbEvents = FirebaseDatabase.getInstance().getReference("events");
+        tvde_Back = findViewById(R.id.tvde_Back);
 
         eventKuList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -44,6 +46,11 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
         recyclerView.setAdapter(adapter);
 
         fetchRegisteredEvents();
+
+        tvde_Back.setOnClickListener(v -> {
+            Intent intent = new Intent(N_EventKu.this, Z_MainActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void fetchRegisteredEvents() {

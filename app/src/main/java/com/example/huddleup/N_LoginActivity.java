@@ -46,7 +46,7 @@ public class N_LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(N_LoginActivity.this, "Berhasil Log In", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(N_LoginActivity.this, N_EventKu.class); // <-- FIXED
+                                Intent intent = new Intent(N_LoginActivity.this, Z_MainActivity.class); // <-- FIXED
                                 startActivity(intent);
                                 finish();
                             } else {
@@ -61,11 +61,6 @@ public class N_LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(N_LoginActivity.this, N_EventKu.class);
-            startActivity(intent);
-            finish();
-        }
     }
 }
 

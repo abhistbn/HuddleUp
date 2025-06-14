@@ -12,6 +12,24 @@
         android:padding="8dp"
         android:clipToPadding="false"/>
 
+    <Button
+        android:id="@+id/btnGoToMyEvents"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_siginsigin"
+        android:drawableStart="@drawable/ic_ticket"
+        android:fontFamily="@font/poppinsmedium"
+        android:textSize="16dp"
+        android:drawablePadding="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Event Ku"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddEvent"
         android:layout_width="wrap_content"

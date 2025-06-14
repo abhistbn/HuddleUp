@@ -17,7 +17,7 @@
         android:theme="@style/Theme.HuddleUp"
         tools:targetApi="31">
 
-        <activity android:name=".Z_MainActivity"
+        <activity android:name=".N_LauncherActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +28,22 @@
         <activity
             android:name=".N_detailEvent"
             android:exported="false" />
+
+        <activity android:name=".Z_MainActivity"
+            android:exported="false" />
+
+        <activity android:name=".N_SigninActivity"
+            android:exported="false" />
+
+        <activity android:name=".N_LoginActivity"
+            android:exported="false" />
+
+        <activity android:name=".N_EventCheckedInActivity"
+            android:exported="false" />
+
+        <activity android:name=".N_EventKu"
+            android:exported="false" />
+
 
     </application>
 
