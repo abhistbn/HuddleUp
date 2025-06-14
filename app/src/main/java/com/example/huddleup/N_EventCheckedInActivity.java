@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import java.util.Objects;
 public class N_EventCheckedInActivity extends AppCompatActivity {
 
     private ConstraintLayout ticketLayout;
+    private Button btnMyEvents;
+    private TextView tvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class N_EventCheckedInActivity extends AppCompatActivity {
         TextView txtLokasi = findViewById(R.id.txtLokasi);
         ticketLayout = findViewById(R.id.ticketLayout);
         Button saveButton = findViewById(R.id.btn_saveImg);
+        btnMyEvents = findViewById(R.id.btn_myEvents);
+        tvBack = findViewById(R.id.tvde_Back);
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -43,6 +48,18 @@ public class N_EventCheckedInActivity extends AppCompatActivity {
         }
 
         saveButton.setOnClickListener(v -> saveTicketAsImage());
+
+        btnMyEvents.setOnClickListener(v -> {
+            Intent intentToMyEvents = new Intent(N_EventCheckedInActivity.this, N_EventKu.class);
+            intentToMyEvents.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intentToMyEvents);
+            finish();
+        });
+
+        tvBack.setOnClickListener(v -> {
+            Intent intent2 = new Intent(N_EventCheckedInActivity.this, Z_MainActivity.class);
+            startActivity(intent2);
+        });
     }
 
     private void saveTicketAsImage() {
