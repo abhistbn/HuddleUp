@@ -2,7 +2,9 @@
     <style name="Base.Theme.HuddleUp" parent="Theme.AppCompat.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.HuddleUp" parent="Base.Theme.HuddleUp" />
+    <style name="Theme.HuddleUp" parent="Base.Theme.HuddleUp">
+        <item name="materialButtonStyle">@style/Widget.AppCompat.Button</item>
+    </style>
 
     <style name="Theme.ManajemenEvent" parent="Theme.AppCompat.DayNight">
         <item name="colorPrimary">@color/purple_500</item>
