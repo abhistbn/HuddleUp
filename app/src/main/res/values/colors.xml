@@ -21,4 +21,12 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+
+    <color name="gradient_start_color">#50C9C3</color>
+    <color name="gradient_end_color">#2C7A9F</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="accent_color">#D629E3</color>
+    <color name="favorite_tint">#E91E63</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
 </resources>
