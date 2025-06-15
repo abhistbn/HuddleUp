@@ -26,7 +26,8 @@
             android:exported="false" />
         <activity
             android:name=".N_SigninActivity"
-            android:exported="false" />
+            android:exported="true" >
+        </activity>
         <activity
             android:name=".N_detailEvent"
             android:exported="false" />
@@ -45,13 +46,12 @@
             android:name=".N_LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationActivity"
+            android:name=".J_NotificationActivity"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
