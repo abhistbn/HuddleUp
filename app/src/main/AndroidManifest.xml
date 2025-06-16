@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.huddleup">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
@@ -16,11 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HuddleUp"
         tools:targetApi="31">
-        <activity
-            android:name=".D_WishlistDetailActivity"
-            android:exported="true" />
-        <activity
-            android:name=".Z_MainActivity"
+        <activity android:name=".Z_MainActivity"
             android:exported="false" />
         <activity
             android:name=".N_EventKu"
@@ -35,8 +31,8 @@
             android:name=".N_detailEvent"
             android:exported="false" />
         <activity
-            android:name=".D_WishlistActivity"
-            android:exported="true" />
+            android:name=".WishlistActivity"
+            android:exported="false" />
         <activity
             android:name=".N_LauncherActivity"
             android:exported="true">
@@ -45,8 +41,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Aktivitas untuk form -->
+        </activity>
+
+        <!-- Aktivitas untuk form -->
         <activity android:name=".EventFormActivity" />
+
         <activity
             android:name=".N_LoginActivity"
             android:exported="false" />

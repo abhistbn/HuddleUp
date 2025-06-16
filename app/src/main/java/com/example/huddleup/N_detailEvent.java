@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class N_detailEvent extends AppCompatActivity {
 
     TextView txtJudul, txtTanggal, txtWaktu, txtLokasi, txtAbout, tvde_Back;
@@ -140,7 +142,25 @@ public class N_detailEvent extends AppCompatActivity {
                 .child(userId)
                 .child("registered_events")
                 .child(eventKey);
+        HashMap<String, Object> registrationData = new HashMap<>();
+        registrationData.put("registered", true); // Ini penanda bahwa user terdaftar
+        registrationData.put("timestamp", System.currentTimeMillis()); // Simpan waktu pendaftaran
 
+        userEventRef.setValue(registrationData).addOnSuccessListener(aVoid -> {
+            Toast.makeText(N_detailEvent.this, "Berhasil mendaftar!", Toast.LENGTH_SHORT).show();
+            btnDaftar.setVisibility(View.GONE);
+
+            Intent intent = new Intent(N_detailEvent.this, N_EventCheckedInActivity.class);
+            intent.putExtra("judul", currentEvent.getJudul());
+            intent.putExtra("tanggal", currentEvent.getTanggal());
+            intent.putExtra("waktu", currentEvent.getWaktu());
+            intent.putExtra("lokasi", currentEvent.getLokasi());
+            startActivity(intent);
+
+        }).addOnFailureListener(e -> {
+            Toast.makeText(N_detailEvent.this, "Gagal mendaftar.", Toast.LENGTH_SHORT).show();
+            btnDaftar.setEnabled(true);
+        });
         userEventRef.setValue(true).addOnSuccessListener(aVoid -> {
             Toast.makeText(N_detailEvent.this, "Berhasil mendaftar!", Toast.LENGTH_SHORT).show();
 
