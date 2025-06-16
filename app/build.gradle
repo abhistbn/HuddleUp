@@ -50,4 +50,5 @@ dependencies {
     implementation 'com.cloudinary:cloudinary-android:2.4.0'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
     implementation 'com.squareup.picasso:picasso:2.8'
+    implementation 'com.github.ismaeldivita:chip-navigation-bar:1.4.0'
 }

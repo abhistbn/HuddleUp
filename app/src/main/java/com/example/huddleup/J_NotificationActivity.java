@@ -44,7 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class J_NotificationActivity extends AppCompatActivity {
+public class J_NotificationActivity extends BaseActivity {
 
     private static final String CLOUDINARY_CLOUD_NAME = "dogwmbaw4";
     private static final String CLOUDINARY_API_KEY = "492621155953182";
@@ -705,5 +705,10 @@ public class J_NotificationActivity extends AppCompatActivity {
                     }
                     @Override public void onReschedule(String requestId, ErrorInfo error) { Log.w("CLOUDINARY_EDIT", "Upload rescheduled: " + error.getDescription()); }
                 }).dispatch();
+
+        }
+    @Override
+    protected int getNavigationMenuItemId() {
+        return R.id.nav_notifications;
     }
 }

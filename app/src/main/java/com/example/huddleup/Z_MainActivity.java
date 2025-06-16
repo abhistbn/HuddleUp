@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-public class Z_MainActivity extends AppCompatActivity {
+public class Z_MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,10 +13,16 @@ public class Z_MainActivity extends AppCompatActivity {
         setContentView(R.layout.z_activity_main);
 
         if (savedInstanceState == null) {
-            showEventListFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new Z_EventListFragment())
+                    .commit();
         }
     }
 
+    @Override
+    protected int getNavigationMenuItemId() {
+        return R.id.nav_manage;
+    }
     public void showEventListFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new Z_EventListFragment())
