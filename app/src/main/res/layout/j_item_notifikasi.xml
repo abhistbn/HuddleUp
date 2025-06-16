@@ -13,6 +13,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/ivNotificationImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp" android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:visibility="gone" android:background="#EEEEEE" />
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
@@ -28,16 +36,6 @@
             android:layout_marginTop="4dp"
             android:text="Deskripsi lengkap notifikasi ini akan muncul di sini."
             android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/ivNotificationImage"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:visibility="gone"
-            android:background="#EEEEEE" />
 
         <TextView
             android:id="@+id/tvTime"
