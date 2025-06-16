@@ -18,8 +18,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-
 public class N_detailEvent extends AppCompatActivity {
 
     TextView txtJudul, txtTanggal, txtWaktu, txtLokasi, txtAbout, tvde_Back;
@@ -68,9 +66,7 @@ public class N_detailEvent extends AppCompatActivity {
                         .error(R.drawable.event)
                         .into(imgEvent);
             }
-
             checkRegistrationStatus();
-
         } else {
             Toast.makeText(this, "Error: Data event tidak lengkap.", Toast.LENGTH_SHORT).show();
             finish();
@@ -96,7 +92,6 @@ public class N_detailEvent extends AppCompatActivity {
             btnDaftar.setVisibility(View.GONE);
             return;
         }
-
         String userId = currentUser.getUid();
         DatabaseReference userEventRef = FirebaseDatabase.getInstance()
                 .getReference("users")
@@ -128,12 +123,10 @@ public class N_detailEvent extends AppCompatActivity {
             Toast.makeText(this, "Anda harus login untuk mendaftar", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (eventKey == null || eventKey.isEmpty()) {
             Toast.makeText(this, "Gagal mendapatkan ID event.", Toast.LENGTH_SHORT).show();
             return;
         }
-
         btnDaftar.setEnabled(false);
 
         String userId = currentUser.getUid();
@@ -142,28 +135,11 @@ public class N_detailEvent extends AppCompatActivity {
                 .child(userId)
                 .child("registered_events")
                 .child(eventKey);
-        HashMap<String, Object> registrationData = new HashMap<>();
-        registrationData.put("registered", true); // Ini penanda bahwa user terdaftar
-        registrationData.put("timestamp", System.currentTimeMillis()); // Simpan waktu pendaftaran
+
+        N_RegistrationInfo registrationData = new N_RegistrationInfo("Telah Terdaftar", System.currentTimeMillis());
 
         userEventRef.setValue(registrationData).addOnSuccessListener(aVoid -> {
             Toast.makeText(N_detailEvent.this, "Berhasil mendaftar!", Toast.LENGTH_SHORT).show();
-            btnDaftar.setVisibility(View.GONE);
-
-            Intent intent = new Intent(N_detailEvent.this, N_EventCheckedInActivity.class);
-            intent.putExtra("judul", currentEvent.getJudul());
-            intent.putExtra("tanggal", currentEvent.getTanggal());
-            intent.putExtra("waktu", currentEvent.getWaktu());
-            intent.putExtra("lokasi", currentEvent.getLokasi());
-            startActivity(intent);
-
-        }).addOnFailureListener(e -> {
-            Toast.makeText(N_detailEvent.this, "Gagal mendaftar.", Toast.LENGTH_SHORT).show();
-            btnDaftar.setEnabled(true);
-        });
-        userEventRef.setValue(true).addOnSuccessListener(aVoid -> {
-            Toast.makeText(N_detailEvent.this, "Berhasil mendaftar!", Toast.LENGTH_SHORT).show();
-
             btnDaftar.setVisibility(View.GONE);
 
             Intent intent = new Intent(N_detailEvent.this, N_EventCheckedInActivity.class);
