@@ -40,8 +40,6 @@ public class Z_EventListFragment extends Fragment {
 
         eventRecyclerView = view.findViewById(R.id.eventRecyclerViewFragment);
         FloatingActionButton fabAddEvent = view.findViewById(R.id.fabAddEvent);
-        btnGoToMyEvents = view.findViewById(R.id.btnGoToMyEvents);
-        fabGoToWishlist = view.findViewById(R.id.fabGoToWishlist);
 
         eventList = new ArrayList<>();
         eventAdapter = new Z_EventAdapterP2(getContext(), eventList);
@@ -57,17 +55,6 @@ public class Z_EventListFragment extends Fragment {
             }
         });
 
-        btnGoToMyEvents.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), N_EventKu.class);
-            startActivity(intent);
-        });
-
-        // --- ONCLICK LISTENER UNTUK TOMBOL WISHLIST ---
-        fabGoToWishlist.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), D_WishlistActivity.class);
-            startActivity(intent);
-        });
-        // ----------------------------------------------------------
 
         eventAdapter.setOnItemContextClickListener((itemView, position) -> {
             selectedEventPosition = position;

@@ -1,20 +1,59 @@
 package com.example.huddleup;
 
+import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class Z_MainActivity extends AppCompatActivity {
+
+    private ChipNavigationBar bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.z_activity_main);
 
+        bottomNav = findViewById(R.id.bottom_nav_chip);
+
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, windowInsets) -> {
+            int bottomInset = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
+            v.setPadding(0, 0, 0, bottomInset);
+            return windowInsets;
+        });
+
         if (savedInstanceState == null) {
-            showEventListFragment();
+            bottomNav.setItemSelected(R.id.nav_manage, true);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new Z_EventListFragment()).commit();
         }
+
+        bottomNav.setOnItemSelectedListener(id -> {
+            boolean isSameActivity = false;
+            Intent intent = null;
+
+            if (id == R.id.nav_events) {
+                intent = new Intent(Z_MainActivity.this, N_EventKu.class);
+            } else if (id == R.id.nav_manage) {
+                isSameActivity = true;
+                showEventListFragment();
+            } else if (id == R.id.nav_favorites) {
+                intent = new Intent(Z_MainActivity.this, D_WishlistActivity.class);
+            } else if (id == R.id.nav_notifications) {
+                intent = new Intent(Z_MainActivity.this, J_NotificationActivity.class);
+            }
+
+            if (!isSameActivity && intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            }
+        });
     }
 
     public void showEventListFragment() {
