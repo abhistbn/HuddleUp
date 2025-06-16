@@ -1,8 +1,6 @@
 package com.example.huddleup;
 
-
-
-import android.app.ProgressDialog; // Untuk dialog loading
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog; // Pastikan ini androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,31 +28,27 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.cloudinary.android.MediaManager; // Import Cloudinary
+import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
-import com.squareup.picasso.Picasso; // Import Picasso
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map; // Import Map untuk Cloudinary config
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-
 
 public class J_NotificationActivity extends AppCompatActivity {
 
     private static final String CLOUDINARY_CLOUD_NAME = "dogwmbaw4";
     private static final String CLOUDINARY_API_KEY = "492621155953182";
     private static final String CLOUDINARY_API_SECRET = "CySQXQNV7UKNv8pCkURttqO8XPo";
-    private static final String CLOUDINARY_UPLOAD_PRESET = "HuddleUp";
     private RecyclerView recyclerView;
     private J_NotificationAdapter adapter;
     private List<J_NotificationItem> notificationList;
@@ -62,15 +56,16 @@ public class J_NotificationActivity extends AppCompatActivity {
     private DatabaseReference eventsDbRef;
     private DatabaseReference userRegisteredEventsDbRef;
     private FirebaseAuth mAuth;
-    private List<J_NotificationItem> tempNewEventsList = new ArrayList<>();
-    private List<J_NotificationItem> tempFollowedEventsList = new ArrayList<>();
+    private List<J_NotificationItem> tempNewEventsList;
+    private List<J_NotificationItem> tempFollowedEventsList;
+    private List<J_NotificationItem> tempManualNotificationsList;
 
     private static final int PICK_IMAGE_REQUEST = 100;
-    private Uri selectedImageUri; // Untuk menyimpan URI gambar yang dipilih
-    private AlertDialog currentAddNotificationDialog; // Untuk menyimpan referensi dialog
-    private ImageView ivDialogPreviewGlobal; // Untuk menyimpan referensi ImageView dari dialog
-    private EditText etTitleGlobal; // Tambahkan ini
-    private EditText etDescriptionGlobal; // Tambahkan ini
+    private Uri selectedImageUri;
+    private AlertDialog currentAddNotificationDialog;
+    private ImageView ivDialogPreviewGlobal;
+    private EditText etTitleGlobal;
+    private EditText etDescriptionGlobal;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,9 +73,7 @@ public class J_NotificationActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.j_notification);
 
-        // Inisialisasi Cloudinary (hanya sekali)
-        // Ganti dengan konfigurasi Cloudinary Anda
-        Map config = new HashMap();
+        Map<String, String> config = new HashMap<>();
         config.put("cloud_name", CLOUDINARY_CLOUD_NAME);
         config.put("api_key", CLOUDINARY_API_KEY);
         config.put("api_secret", CLOUDINARY_API_SECRET);
@@ -94,12 +87,13 @@ public class J_NotificationActivity extends AppCompatActivity {
         adapter = new J_NotificationAdapter(this, notificationList);
         recyclerView.setAdapter(adapter);
 
-        // === Swipe to delete ===
+        tempFollowedEventsList = new ArrayList<>();
+        tempNewEventsList = new ArrayList<>();
+        tempManualNotificationsList = new ArrayList<>();
+
         J_NotificationAdapter.attachItemTouchHelper(recyclerView, adapter);
 
-        // === FAB: klik untuk upload gambar, long click untuk tambah notifikasi ===
         FloatingActionButton fabUpload = findViewById(R.id.fabUpload);
-
         fabUpload.setOnClickListener(v -> showAddNotificationDialog());
         fabUpload.setOnLongClickListener(v -> {
             showAddNotificationDialog();
@@ -107,34 +101,25 @@ public class J_NotificationActivity extends AppCompatActivity {
         });
 
         adapter.setOnItemLongClickListener(position -> {
-            // Panggil metode yang sudah dipindahkan
-            // Pastikan item yang diedit adalah TYPE_NOTIFICATION, bukan header
             if (notificationList.get(position).getType() == J_NotificationItem.TYPE_NOTIFICATION) {
                 showEditNotificationDialog(position);
             } else {
-                Log.d("NOTIF_ACTION", "Tidak bisa edit header.");
+                Log.d("NOTIF_ACTION", "Cannot edit header item.");
             }
         });
 
         adapter.setOnItemSwipeListener(position -> {
-            // Ambil item yang di-swipe
             J_NotificationItem swipedItem = notificationList.get(position);
+            Log.d("SWIPE_DEBUG", "Item at position " + position + " swiped. Title: " + swipedItem.getTitle());
 
-            // Logging (untuk debugging)
-            Log.d("SWIPE_DEBUG", "Item di posisi " + position + " di-swipe. Judul: " + swipedItem.getTitle());
-
-            // Cek jenis item: hanya hapus kalau TYPE_NOTIFICATION
             if (swipedItem.getType() == J_NotificationItem.TYPE_NOTIFICATION) {
-                adapter.deleteItem(position); // Hapus dari list adapter
-                // TODO: Pertimbangkan menghapus gambar dari Cloudinary jika notifikasi dihapus
+                adapter.deleteItem(position);
             } else {
-                // Jika bukan notifikasi (misal header), batalkan swipe
                 adapter.notifyItemChanged(position);
-                Log.d("SWIPE_DEBUG", "Swipe dibatalkan: bukan tipe notifikasi");
+                Log.d("SWIPE_DEBUG", "Swipe cancelled: not a notification item.");
             }
         });
 
-        // === Firebase setup ===
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -145,16 +130,16 @@ public class J_NotificationActivity extends AppCompatActivity {
             userRegisteredEventsDbRef = FirebaseDatabase.getInstance().getReference("users")
                     .child(currentUser.getUid())
                     .child("registered_events");
-            loadRegisteredAndAllEvents(); // Memuat data saat aplikasi dimulai
+            loadRegisteredAndAllEvents();
         } else {
-            Log.d("NOTIF_DEBUG", "Tidak ada user yang login. Hanya akan memuat event baru.");
-            loadOnlyNewEvents(); // Memuat data saat aplikasi dimulai
+            Log.d("NOTIF_DEBUG", "No user logged in. Loading only new events.");
+            loadOnlyNewEvents();
         }
     }
 
     private void showAddNotificationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.j_add_notification, null); // Pastikan ini layout yang benar
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.j_add_notification, null);
         builder.setView(dialogView);
 
         EditText etTitle = dialogView.findViewById(R.id.etTitle);
@@ -162,47 +147,40 @@ public class J_NotificationActivity extends AppCompatActivity {
         Button btnChooseImage = dialogView.findViewById(R.id.btnChooseImage);
         ImageView ivDialogPreview = dialogView.findViewById(R.id.ivDialogPreview);
 
-        // Reset selectedImageUri setiap kali dialog dibuka
         selectedImageUri = null;
         ivDialogPreview.setVisibility(View.GONE);
         ivDialogPreview.setImageDrawable(null);
 
-        btnChooseImage.setOnClickListener(v -> {
-            openImageChooser();
-        });
+        btnChooseImage.setOnClickListener(v -> openImageChooser());
 
-        builder.setTitle("Tambah Notifikasi");
-        builder.setPositiveButton("Simpan", (dialog, which) -> {
+        builder.setPositiveButton("Save", (dialog, which) -> {
             String title = etTitle.getText().toString().trim();
             String description = etDescription.getText().toString().trim();
 
             if (title.isEmpty()) {
-                etTitle.setError("Judul tidak boleh kosong");
+                etTitle.setError("Title cannot be empty");
                 return;
             }
 
-            // Jika ada gambar dipilih, upload dulu ke Cloudinary
             if (selectedImageUri != null) {
                 uploadImageToCloudinary(selectedImageUri, title, description);
             } else {
-                // Jika tidak ada gambar, langsung simpan notifikasi ke Firebase
-                saveNotificationToFirebase(title, description, null); // null untuk imageUrl
+                saveNotificationToFirebase(title, description, null);
             }
             if (currentAddNotificationDialog != null) {
                 currentAddNotificationDialog.dismiss();
             }
         });
 
-        builder.setNegativeButton("Batal", (dialog, which) -> {
-            // Ketika dialog dibatalkan, pastikan untuk membersihkan referensi jika perlu
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
             selectedImageUri = null;
             ivDialogPreviewGlobal = null;
             etTitleGlobal = null;
             etDescriptionGlobal = null;
         });
 
-        currentAddNotificationDialog = builder.create(); // Buat dialog dan simpan referensinya
-        currentAddNotificationDialog.show(); // Tampilkan dialog
+        currentAddNotificationDialog = builder.create();
+        currentAddNotificationDialog.show();
     }
 
     private void openImageChooser() {
@@ -216,7 +194,7 @@ public class J_NotificationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            ImageView ivDialogPreview = findViewById(R.id.ivDialogPreview); // Ambil ImageView dari dialog yang sedang aktif
+            ImageView ivDialogPreview = findViewById(R.id.ivDialogPreview);
             if (ivDialogPreview != null) {
                 Picasso.get().load(selectedImageUri).into(ivDialogPreview);
                 ivDialogPreview.setVisibility(View.VISIBLE);
@@ -227,15 +205,14 @@ public class J_NotificationActivity extends AppCompatActivity {
         }
     }
 
-
     private void uploadImageToCloudinary(Uri imageUri, String title, String description) {
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Mengunggah gambar...");
+        progressDialog.setMessage("Uploading image...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
         MediaManager.get().upload(imageUri)
-                .option("folder", "notification_images") // Folder di Cloudinary
+                .option("folder", "notification_images")
                 .callback(new UploadCallback() {
                     @Override
                     public void onStart(String requestId) {
@@ -245,7 +222,7 @@ public class J_NotificationActivity extends AppCompatActivity {
                     @Override
                     public void onProgress(String requestId, long bytes, long totalBytes) {
                         double progress = (double) bytes / totalBytes * 100;
-                        progressDialog.setMessage("Mengunggah gambar... " + (int) progress + "%");
+                        progressDialog.setMessage("Uploading image... " + (int) progress + "%");
                         Log.d("CLOUDINARY_UPLOAD", "Progress: " + (int) progress + "%");
                     }
 
@@ -254,24 +231,20 @@ public class J_NotificationActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         String imageUrl = (String) resultData.get("url");
 
-                        // --- TAMBAHKAN KODE INI ---
-                        // Pastikan URL menggunakan HTTPS
                         if (imageUrl != null && imageUrl.startsWith("http://")) {
                             imageUrl = imageUrl.replace("http://", "https://");
                         }
-                        // --- AKHIR KODE TAMBAHAN ---
 
-                        Log.d("CLOUDINARY_UPLOAD", "Upload successful. Final URL: " + imageUrl); // Perbarui log ini
-                        saveNotificationToFirebase(title, description, imageUrl); // Gunakan 'imageUrl' yang sudah HTTPS
-                        Toast.makeText(J_NotificationActivity.this, "Gambar berhasil diunggah!", Toast.LENGTH_SHORT).show();
+                        Log.d("CLOUDINARY_UPLOAD", "Upload successful. Final URL: " + imageUrl);
+                        saveNotificationToFirebase(title, description, imageUrl);
+                        Toast.makeText(J_NotificationActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(String requestId, ErrorInfo error) {
                         progressDialog.dismiss();
                         Log.e("CLOUDINARY_UPLOAD", "Upload error: " + error.getDescription());
-                        Toast.makeText(J_NotificationActivity.this, "Gagal mengunggah gambar: " + error.getDescription(), Toast.LENGTH_LONG).show();
-                        // Tetap simpan notifikasi tanpa gambar jika upload gagal
+                        Toast.makeText(J_NotificationActivity.this, "Failed to upload image: " + error.getDescription(), Toast.LENGTH_LONG).show();
                         saveNotificationToFirebase(title, description, null);
                     }
 
@@ -283,8 +256,8 @@ public class J_NotificationActivity extends AppCompatActivity {
     }
 
     private void saveNotificationToFirebase(String title, String description, @Nullable String imageUrl) {
-        DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications"); // <-- Buat node baru "notifications"
-        String notificationId = notificationsDbRef.push().getKey(); // Generate unique key
+        DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications");
+        String notificationId = notificationsDbRef.push().getKey();
 
         long currentTimestamp = System.currentTimeMillis();
         String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(currentTimestamp));
@@ -294,28 +267,24 @@ public class J_NotificationActivity extends AppCompatActivity {
                 title,
                 description,
                 currentTime,
-                false, // isRead
-                null, // eventDateString tidak relevan untuk notif manual
-                currentTimestamp, // rawTimestamp
-                imageUrl // <-- Simpan URL gambar di sini
+                false,
+                null,
+                currentTimestamp,
+                imageUrl
         );
 
         if (notificationId != null) {
             notificationsDbRef.child(notificationId).setValue(newNotification)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(J_NotificationActivity.this, "Notifikasi berhasil ditambahkan!", Toast.LENGTH_SHORT).show();
-                        Log.d("FIREBASE_SAVE", "Notifikasi berhasil disimpan: " + title);
-                        // Data akan otomatis dimuat ulang oleh loadAllEventsFromDb (karena addValueEventListener)
-                        // atau panggil populateRecyclerView() jika Anda ingin segera melihat perubahan
-                        // populateRecyclerView(); // Ini akan dipanggil dari listener eventsDbRef di onDataChange
+                        Toast.makeText(J_NotificationActivity.this, "Notification added successfully!", Toast.LENGTH_SHORT).show();
+                        Log.d("FIREBASE_SAVE", "Notification saved: " + title);
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(J_NotificationActivity.this, "Gagal menambahkan notifikasi: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("FIREBASE_SAVE", "Gagal menyimpan notifikasi: " + e.getMessage());
+                        Toast.makeText(J_NotificationActivity.this, "Failed to add notification: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("FIREBASE_SAVE", "Failed to save notification: " + e.getMessage());
                     });
         }
     }
-
 
     private void loadRegisteredAndAllEvents() {
         HashMap<String, Long> registeredEventTimestamps = new HashMap<>();
@@ -379,7 +348,6 @@ public class J_NotificationActivity extends AppCompatActivity {
         }
     }
 
-
     private void loadAllEventsFromDb(HashMap<String, Long> registeredEventTimestamps, boolean userIsLoggedIn) {
         eventsDbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -395,12 +363,12 @@ public class J_NotificationActivity extends AppCompatActivity {
 
                         if (userIsLoggedIn && registeredEventTimestamps.containsKey(event.getKey())) {
                             Long registrationTimestamp = registeredEventTimestamps.get(event.getKey());
-                            String formattedTimestamp = (registrationTimestamp != null) ? timeFormatter.format(new Date(registrationTimestamp)) : "Baru saja";
+                            String formattedTimestamp = (registrationTimestamp != null) ? timeFormatter.format(new Date(registrationTimestamp)) : "Just now";
 
                             tempFollowedEventsList.add(new J_NotificationItem(
                                     J_NotificationItem.TYPE_NOTIFICATION,
-                                    "🎉 Pendaftaran Berhasil: " + event.getName(),
-                                    "Selamat! Kamu berhasil terdaftar di event '" + event.getName() + "'. Siap-siap untuk petualangan seru!",
+                                    "🎉 Registration Successful: " + event.getName(),
+                                    "Congratulations! You have successfully registered for the event '" + event.getName() + "'. Get ready for an exciting adventure!",
                                     formattedTimestamp,
                                     false,
                                     event.getDate(),
@@ -420,14 +388,14 @@ public class J_NotificationActivity extends AppCompatActivity {
                                 long diffDaysToEvent = TimeUnit.DAYS.convert(diffMillisToEvent, TimeUnit.MILLISECONDS);
 
                                 switch (kategoriWaktu) {
-                                    case "Hari Ini": title = "🔔 HARI INI: " + event.getName() + " Dimulai!"; uniqueMessage = "Waktunya beraksi! Event '" + event.getName() + "' siap menanti kehadiranmu. Jangan sampai terlewat!"; break;
-                                    case "Besok": title = "⏳ Tinggal 1 Hari Lagi: " + event.getName(); uniqueMessage = "Hitungan mundur terakhir! Besok adalah harinya '" + event.getName() + "'. Persiapkan dirimu!"; break;
-                                    case "Mendatang (7 Hari)": title = "🗓️ " + (diffDaysToEvent + 1) + " Hari Menuju: " + event.getName(); uniqueMessage = "Sudah tidak sabar? Tinggal beberapa hari lagi menuju event '" + event.getName() + "'. Tetap semangat!"; break;
+                                    case "Hari Ini": title = "🔔 TODAY: " + event.getName() + " Starts!"; uniqueMessage = "Time for action! The event '" + event.getName() + "' awaits your presence. Don't miss out!"; break;
+                                    case "Besok": title = "⏳ Only 1 Day Left: " + event.getName(); uniqueMessage = "Final countdown! Tomorrow is the day for '" + event.getName() + "'. Prepare yourself!"; break;
+                                    case "Mendatang (7 Hari)": title = "🗓️ " + (diffDaysToEvent + 1) + " Days Until: " + event.getName(); uniqueMessage = "Can't wait? Only a few days left until '" + event.getName() + "'. Stay excited!"; break;
                                     case "7 Hari Terakhir":
                                     case "Kemarin":
-                                    case "Lainnya (Lampau)": title = "Event Selesai: " + event.getName(); uniqueMessage = "Event '" + event.getName() + "' sudah selesai. Terima kasih telah berpartisipasi!"; break;
+                                    case "Lainnya (Lampau)": title = "Event Finished: " + event.getName(); uniqueMessage = "The event '" + event.getName() + "' has concluded. Thank you for participating!"; break;
                                     case "Mendatang (Jauh)":
-                                    default: title = "🗓️ Event Mendatang: " + event.getName(); uniqueMessage = "Event ini akan segera hadir. Tetap ikuti perkembangannya!"; break;
+                                    default: title = "🗓️ Upcoming Event: " + event.getName(); uniqueMessage = "This event will be coming soon. Stay tuned for updates!"; break;
                                 }
 
                                 if (!title.isEmpty()) {
@@ -459,7 +427,7 @@ public class J_NotificationActivity extends AppCompatActivity {
 
                             tempNewEventsList.add(new J_NotificationItem(
                                     J_NotificationItem.TYPE_NOTIFICATION,
-                                    "Event Baru: " + event.getName(),
+                                    "New Event: " + event.getName(),
                                     event.getAbout(),
                                     formattedTimestamp,
                                     false,
@@ -469,132 +437,111 @@ public class J_NotificationActivity extends AppCompatActivity {
                             ));
                         }
                     }
-                }// Panggil metode baru ini
+                }
                 Log.d("FIREBASE_DATA_LOADED", "Events data loaded. Total followed events: " + tempFollowedEventsList.size() + ", Total new events from events node: " + tempNewEventsList.size());
                 loadManualNotifications();
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("FIREBASE", "Database Error (All Events): " + error.getMessage());
-                loadManualNotifications(); // Tetap coba muat notifikasi manual jika event error
+                loadManualNotifications();
             }
-
         });
     }
 
     private void loadManualNotifications() {
         DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications");
 
-        notificationsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        notificationsDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                tempNewEventsList.removeIf(item -> item.getEventDateString() == null); // Asumsi notif manual eventDateString == null
+                tempManualNotificationsList.clear();
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     J_NotificationItem manualNotif = dataSnapshot.getValue(J_NotificationItem.class);
                     if (manualNotif != null) {
+                        manualNotif.setKey(dataSnapshot.getKey());
                         if (manualNotif.getType() == J_NotificationItem.TYPE_NOTIFICATION && manualNotif.getEventDateString() == null) {
-                            manualNotif.setKey(dataSnapshot.getKey()); // Tambahkan ke tempNewEventsList
-                            tempNewEventsList.add(manualNotif);
+                            tempManualNotificationsList.add(manualNotif);
                         }
                     }
                 }
-                Log.d("FIREBASE_DATA_LOADED", "Manual notifications data loaded. Total manual notifications: " + (snapshot.getChildrenCount()));
-                populateRecyclerView(); // Panggil populateRecyclerView setelah kedua data dimuat// <-- Pastikan ini dipanggil di akhir onDataChange
+                Log.d("FIREBASE_DATA_LOADED", "Manual notifications data loaded. Total manual notifications: " + tempManualNotificationsList.size());
+
+                populateRecyclerView();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("FIREBASE", "Database Error (Manual Notifications): " + error.getMessage());
-                populateRecyclerView(); // Tetap populate RecyclerView jika error
+                populateRecyclerView();
             }
         });
     }
 
-
-    // Di dalam J_NotificationActivity class
     private void populateRecyclerView() {
-        // List baru untuk notifikasi manual (penting)
-        List<J_NotificationItem> manualNotifications = new ArrayList<>();
         List<J_NotificationItem> hariIniNotifications = new ArrayList<>();
         List<J_NotificationItem> kemarinNotifications = new ArrayList<>();
         List<J_NotificationItem> hariHariLaluNotifications = new ArrayList<>();
 
-        // Gabungkan tempNewEventsList dan tempFollowedEventsList
-        List<J_NotificationItem> allNotifications = new ArrayList<>();
-        allNotifications.addAll(tempFollowedEventsList);
-        allNotifications.addAll(tempNewEventsList); // Sekarang tempNewEventsList berisi event baru dari 'events' DAN notifikasi manual
+        List<J_NotificationItem> allEventNotifications = new ArrayList<>();
+        allEventNotifications.addAll(tempFollowedEventsList);
+        allEventNotifications.addAll(tempNewEventsList);
 
-        // Urutkan semua notifikasi berdasarkan timestamp (terbaru di atas)
-        Collections.sort(allNotifications, (item1, item2) -> Long.compare(item2.getRawTimestamp(), item1.getRawTimestamp()));
+        Collections.sort(allEventNotifications, (item1, item2) -> Long.compare(item2.getRawTimestamp(), item1.getRawTimestamp()));
 
-        // Pisahkan notifikasi manual dari event-driven notifications
-        for (J_NotificationItem item : allNotifications) {
-            // Asumsi: notifikasi manual memiliki eventDateString == null
-            if (item.getType() == J_NotificationItem.TYPE_NOTIFICATION && item.getEventDateString() == null) {
-                manualNotifications.add(item);
-            } else {
-                // Notifikasi yang berhubungan dengan event
-                long timestamp = item.getRawTimestamp();
-                if (timestamp == 0) {
-                    timestamp = System.currentTimeMillis(); // Fallback
-                }
-                String kategori = getKategoriWaktuNotifikasi(timestamp);
+        for (J_NotificationItem item : allEventNotifications) {
+            long timestamp = item.getRawTimestamp();
+            if (timestamp == 0) {
+                timestamp = System.currentTimeMillis();
+            }
+            String kategori = getKategoriWaktuNotifikasi(timestamp);
 
-                switch (kategori) {
-                    case "Hari Ini":
-                        hariIniNotifications.add(item);
-                        break;
-                    case "Kemarin":
-                        kemarinNotifications.add(item);
-                        break;
-                    default:
-                        hariHariLaluNotifications.add(item);
-                        break;
-                }
+            switch (kategori) {
+                case "Hari Ini":
+                    hariIniNotifications.add(item);
+                    break;
+                case "Kemarin":
+                    kemarinNotifications.add(item);
+                    break;
+                default:
+                    hariHariLaluNotifications.add(item);
+                    break;
             }
         }
 
-        // --- Sekarang susun notificationList utama dengan urutan baru ---
         notificationList.clear();
 
-        // 1. Notifikasi Manual (Penting)
-        if (!manualNotifications.isEmpty()) {
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Notifikasi Penting", "", "", false, null, 0, null));
-            // Urutkan notifikasi manual berdasarkan waktu dibuat (terbaru di atas)
-            Collections.sort(manualNotifications, (item1, item2) -> Long.compare(item2.getRawTimestamp(), item1.getRawTimestamp()));
-            notificationList.addAll(manualNotifications);
+        if (!tempManualNotificationsList.isEmpty()) {
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Important Notifications", "", "", false, null, 0, null));
+            Collections.sort(tempManualNotificationsList, (item1, item2) -> Long.compare(item2.getRawTimestamp(), item1.getRawTimestamp()));
+            notificationList.addAll(tempManualNotificationsList);
         }
 
-        // 2. Notifikasi Hari Ini
         if (!hariIniNotifications.isEmpty()) {
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Hari Ini", "", "", false, null, 0, null));
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Today", "", "", false, null, 0, null));
             notificationList.addAll(hariIniNotifications);
         }
 
-        // 3. Notifikasi Kemarin
         if (!kemarinNotifications.isEmpty()) {
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Kemarin", "", "", false, null, 0, null));
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Yesterday", "", "", false, null, 0, null));
             notificationList.addAll(kemarinNotifications);
         }
 
-        // 4. Notifikasi Hari-Hari Lalu
         if (!hariHariLaluNotifications.isEmpty()) {
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Hari-Hari Lalu", "", "", false, null, 0, null));
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Past Days", "", "", false, null, 0, null));
             notificationList.addAll(hariHariLaluNotifications);
         }
 
         adapter.notifyDataSetChanged();
-        Log.d("NOTIF_CHECK", "Total notifikasi yang ditampilkan di RecyclerView: " + notificationList.size());
+        Log.d("NOTIF_CHECK", "Total notifications displayed in RecyclerView: " + notificationList.size());
 
         for (int i = 0; i < notificationList.size(); i++) {
             J_NotificationItem item = notificationList.get(i);
             Log.d("DEBUG_FINAL_LIST", i + ": Type=" + item.getType() + ", Title='" + item.getTitle() + "', RawTimestamp=" + item.getRawTimestamp() + ", ImageUrl=" + item.getImageUrl());
         }
     }
-
 
     private String getKategoriTanggal(String tanggalEvent) {
         SimpleDateFormat inputSdfFirebaseID = new SimpleDateFormat("dd MMMM यथा", new Locale("id", "ID"));
@@ -603,7 +550,7 @@ public class J_NotificationActivity extends AppCompatActivity {
             eventDate = inputSdfFirebaseID.parse(tanggalEvent);
         } catch (ParseException e) {
             Log.e("NotificationActivity", "Error parsing event date string (dd MMMM यथा): " + tanggalEvent + " - " + e.getMessage());
-            return "Lainnya";
+            return "Other";
         }
 
         Date today = new Date();
@@ -632,27 +579,23 @@ public class J_NotificationActivity extends AppCompatActivity {
             }
         } catch (ParseException e) {
             Log.e("NotificationActivity", "Error comparing dates after initial parse: " + e.getMessage());
-            return "Lainnya";
+            return "Other";
         }
     }
 
-    // Metode ini dihapus atau diubah karena logikanya sudah dipindahkan
-    // ke showAddNotificationDialog() dan saveNotificationToFirebase()
-    // @Override
-    // protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    //     super.onActivityResult(requestCode, resultCode, data);
-    //     if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
-    //         Uri selectedImage = data.getData();
-    //         long currentTimestamp = System.currentTimeMillis();
-    //         String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(currentTimestamp));
-    //         J_NotificationItem newItem = new J_NotificationItem(J_NotificationItem.TYPE_NOTIFICATION, "Upload Gambar", "Admin menambahkan gambar", currentTime, false, null, currentTimestamp);
-    //         notificationList.add(1, newItem);
-    //         adapter.notifyItemInserted(1);
-    //     }
-    // }
+    private void showEditNotificationDialog(int position) {
+        if (position < 0 || position >= notificationList.size()) {
+            Log.e("EDIT_NOTIF", "Invalid position: " + position);
+            return;
+        }
 
-    // showCreateNotificationDialog ini juga bisa dihapus jika tidak lagi digunakan
-    private void showCreateNotificationDialog() {
+        J_NotificationItem item = notificationList.get(position);
+
+        if (item.getType() != J_NotificationItem.TYPE_NOTIFICATION) {
+            Log.d("EDIT_NOTIF", "Cannot edit non-notification item (header).");
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.j_dialog_create_notification, null);
         builder.setView(dialogView);
@@ -660,67 +603,23 @@ public class J_NotificationActivity extends AppCompatActivity {
         EditText etTitle = dialogView.findViewById(R.id.etTitle);
         EditText etDescription = dialogView.findViewById(R.id.etDescription);
         Button btnChooseImage = dialogView.findViewById(R.id.btnChooseImage);
-        ImageView ivPreview = dialogView.findViewById(R.id.ivDialogPreview);
+        ImageView ivDialogPreview = dialogView.findViewById(R.id.ivDialogPreview);
 
-        builder.setPositiveButton("Add", (dialog, which) -> {
-            String title = etTitle.getText().toString();
-            String desc = etDescription.getText().toString();
-            long currentTimestamp = System.currentTimeMillis();
-            String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(currentTimestamp));
-
-            // Jika masih ingin pakai ini, Anda juga perlu menambahkan logika gambar di sini
-            // dan menyimpannya ke Firebase
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_NOTIFICATION, title, desc, currentTime, false, null, currentTimestamp));
-            adapter.notifyItemInserted(notificationList.size() - 1);
-        });
-
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
-    }
-    private void showEditNotificationDialog(int position) {
-        if (position < 0 || position >= notificationList.size()) {
-            Log.e("EDIT_NOTIF", "Posisi tidak valid: " + position);
-            return;
-        }
-
-        J_NotificationItem item = notificationList.get(position);
-
-        if (item.getType() != J_NotificationItem.TYPE_NOTIFICATION) {
-            Log.d("EDIT_NOTIF", "Tidak bisa mengedit item non-notifikasi (header).");
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.j_dialog_create_notification, null);
-        builder.setView(dialogView);
-
-        EditText etTitle = dialogView.findViewById(R.id.etTitle);
-        EditText etDescription = dialogView.findViewById(R.id.etDescription);
-        Button btnChooseImage = dialogView.findViewById(R.id.btnChooseImage); // Ambil tombol gambar
-        ImageView ivDialogPreview = dialogView.findViewById(R.id.ivDialogPreview); // Ambil preview gambar
-
-        // Set data yang sudah ada
         etTitle.setText(item.getTitle());
         etDescription.setText(item.getDescription());
 
-        // Jika ada gambar, tampilkan di preview
         Uri initialImageUri = null;
         if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
             Picasso.get().load(item.getImageUrl()).into(ivDialogPreview);
             ivDialogPreview.setVisibility(View.VISIBLE);
-            initialImageUri = Uri.parse(item.getImageUrl()); // Set URI untuk perbandingan
+            initialImageUri = Uri.parse(item.getImageUrl());
         } else {
             ivDialogPreview.setVisibility(View.GONE);
         }
         selectedImageUri = initialImageUri;
 
-        // Listener untuk memilih gambar baru saat edit
-        btnChooseImage.setOnClickListener(v -> {
-            openImageChooser();
-        });
+        btnChooseImage.setOnClickListener(v -> openImageChooser());
 
-
-        builder.setTitle("Edit Notifikasi");
         builder.setPositiveButton("Update", (dialog, which) -> {
             String updatedTitle = etTitle.getText().toString();
             String updatedDescription = etDescription.getText().toString();
@@ -729,35 +628,33 @@ public class J_NotificationActivity extends AppCompatActivity {
             boolean isTextChanged = !updatedTitle.equals(item.getTitle()) || !updatedDescription.equals(item.getDescription());
 
             if (isImageChanged) {
-                // Upload gambar baru dan kemudian update Firebase
                 uploadImageToCloudinaryForEdit(selectedImageUri, item.getKey(), updatedTitle, updatedDescription, position);
             } else if (isTextChanged) {
-                // Hanya update teks di Firebase jika tidak ada perubahan gambar
                 DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications");
                 notificationsDbRef.child(item.getKey()).child("title").setValue(updatedTitle);
                 notificationsDbRef.child(item.getKey()).child("description").setValue(updatedDescription)
                         .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(J_NotificationActivity.this, "Notifikasi diperbarui (teks)!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(J_NotificationActivity.this, "Notification updated (text)!", Toast.LENGTH_SHORT).show();
                             item.setTitle(updatedTitle);
                             item.setDescription(updatedDescription);
                             adapter.notifyItemChanged(position);
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(J_NotificationActivity.this, "Gagal memperbarui notifikasi (teks): " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(J_NotificationActivity.this, "Failed to update notification (text): " + e.getMessage(), Toast.LENGTH_LONG).show();
                         });
             } else {
-                Toast.makeText(J_NotificationActivity.this, "Tidak ada perubahan.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(J_NotificationActivity.this, "No changes made.", Toast.LENGTH_SHORT).show();
             }
-            dialog.dismiss(); // Tutup dialog setelah update
+            dialog.dismiss();
         });
 
-        builder.setNegativeButton("Batal", null);
+        builder.setNegativeButton("Cancel", null);
         builder.show();
     }
-    // Metode baru untuk upload gambar saat edit
+
     private void uploadImageToCloudinaryForEdit(Uri imageUri, String notificationKey, String newTitle, String newDescription, int position) {
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Mengunggah gambar baru...");
+        progressDialog.setMessage("Uploading new image...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -767,48 +664,44 @@ public class J_NotificationActivity extends AppCompatActivity {
                     @Override public void onStart(String requestId) { Log.d("CLOUDINARY_EDIT", "Upload started: " + requestId); }
                     @Override public void onProgress(String requestId, long bytes, long totalBytes) {
                         double progress = (double) bytes / totalBytes * 100;
-                        progressDialog.setMessage("Mengunggah gambar... " + (int) progress + "%");
+                        progressDialog.setMessage("Uploading image... " + (int) progress + "%");
                     }
                     @Override
                     public void onSuccess(String requestId, Map resultData) {
                         progressDialog.dismiss();
                         String newImageUrl = (String) resultData.get("url");
 
-                        // --- TAMBAHKAN KODE INI ---
-                        // Pastikan URL menggunakan HTTPS
                         if (newImageUrl != null && newImageUrl.startsWith("http://")) {
                             newImageUrl = newImageUrl.replace("http://", "https://");
                         }
-                        // --- AKHIR KODE TAMBAHAN ---
 
-                        Log.d("CLOUDINARY_EDIT", "Upload successful. Final URL: " + newImageUrl); // Perbarui log ini
-                        // Update di Firebase
+                        Log.d("CLOUDINARY_EDIT", "Upload successful. Final URL: " + newImageUrl);
                         DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications");
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("title", newTitle);
                         updates.put("description", newDescription);
-                        updates.put("imageUrl", newImageUrl); // Gunakan newImageUrl yang sudah HTTPS
+                        updates.put("imageUrl", newImageUrl);
 
                         notificationsDbRef.child(notificationKey).updateChildren(updates)
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(J_NotificationActivity.this, "Notifikasi dan gambar berhasil diperbarui!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(J_NotificationActivity.this, "Notification and image updated successfully!", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
-                                    Toast.makeText(J_NotificationActivity.this, "Gagal memperbarui notifikasi dan gambar: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(J_NotificationActivity.this, "Failed to update notification and image: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 });
                     }
                     @Override
                     public void onError(String requestId, ErrorInfo error) {
                         progressDialog.dismiss();
                         Log.e("CLOUDINARY_EDIT", "Upload error: " + error.getDescription());
-                        Toast.makeText(J_NotificationActivity.this, "Gagal mengunggah gambar: " + error.getDescription() + ". Notifikasi disimpan tanpa gambar baru.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(J_NotificationActivity.this, "Failed to upload image: " + error.getDescription() + ". Notification saved without new image.", Toast.LENGTH_LONG).show();
                         DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications");
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("title", newTitle);
                         updates.put("description", newDescription);
                         notificationsDbRef.child(notificationKey).updateChildren(updates)
-                                .addOnSuccessListener(aVoid -> Toast.makeText(J_NotificationActivity.this, "Notifikasi diperbarui (tanpa gambar baru).", Toast.LENGTH_SHORT).show())
-                                .addOnFailureListener(e -> Toast.makeText(J_NotificationActivity.this, "Gagal memperbarui notifikasi (tanpa gambar baru): " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                .addOnSuccessListener(aVoid -> Toast.makeText(J_NotificationActivity.this, "Notification updated (without new image).", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e -> Toast.makeText(J_NotificationActivity.this, "Failed to update notification (without new image): " + e.getMessage(), Toast.LENGTH_LONG).show());
                     }
                     @Override public void onReschedule(String requestId, ErrorInfo error) { Log.w("CLOUDINARY_EDIT", "Upload rescheduled: " + error.getDescription()); }
                 }).dispatch();

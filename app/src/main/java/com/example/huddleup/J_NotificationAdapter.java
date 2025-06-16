@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-// import android.net.Uri; // Tidak digunakan di sini, bisa dihapus jika tidak ada error
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +53,7 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (viewType == J_NotificationItem.TYPE_HEADER) {
             View view = LayoutInflater.from(context).inflate(R.layout.item_header, parent, false);
             return new HeaderViewHolder(view);
-        } else { // TYPE_NOTIFICATION
+        } else {
             View view = LayoutInflater.from(context).inflate(R.layout.j_item_notifikasi, parent, false);
             return new NotificationViewHolder(view);
         }
@@ -67,7 +66,7 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (holder.getItemViewType() == J_NotificationItem.TYPE_HEADER) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
             headerHolder.tvHeaderTitle.setText(item.getTitle());
-        } else { // TYPE_NOTIFICATION
+        } else {
             NotificationViewHolder notificationHolder = (NotificationViewHolder) holder;
             notificationHolder.tvTitle.setText(item.getTitle());
             notificationHolder.tvDescription.setText(item.getDescription());
@@ -102,11 +101,9 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void deleteItem(int position) {
-        // TODO: Jika Anda menyimpan notifikasi manual di Firebase, Anda juga harus menghapusnya dari Firebase di sini
-        // Anda perlu mendapatkan key Firebase dari item tersebut untuk menghapusnya
         notificationList.remove(position);
         notifyItemRemoved(position);
-        Log.d("NOTIF_DELETE", "Item dihapus dari list lokal di posisi: " + position);
+        Log.d("NOTIF_DELETE", "Item deleted from local list at position: " + position);
     }
 
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -140,7 +137,6 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public static void attachItemTouchHelper(RecyclerView recyclerView, J_NotificationAdapter adapter) {
-        // --- Deklarasi simpleItemTouchCallback di sini ---
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             private final Drawable deleteIcon = ContextCompat.getDrawable(adapter.context, R.drawable.ic_trash);
             private final Paint paint = new Paint();
@@ -154,7 +150,7 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 } else {
                     intrinsicWidth = 0;
                     intrinsicHeight = 0;
-                    Log.e("SWIPE_DRAW", "Delete icon is null! Check R.drawable.ic_delete");
+                    Log.e("SWIPE_DRAW", "Delete icon is null! Check R.drawable.ic_trash");
                 }
                 paint.setColor(Color.RED);
             }
@@ -177,16 +173,15 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 View itemView = viewHolder.itemView;
                 int itemHeight = itemView.getBottom() - itemView.getTop();
-                int itemWidth = itemView.getRight() - itemView.getLeft();
 
                 if (viewHolder.getItemViewType() == J_NotificationItem.TYPE_HEADER || dX == 0) {
                     return;
                 }
 
                 RectF background;
-                if (dX > 0) { // Swipe ke kanan
+                if (dX > 0) {
                     background = new RectF(itemView.getLeft(), itemView.getTop(), dX, itemView.getBottom());
-                } else { // Swipe ke kiri
+                } else {
                     background = new RectF(itemView.getRight() + dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
                 }
                 c.drawRect(background, paint);
@@ -198,10 +193,10 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     int iconRight;
                     int iconMargin = (itemHeight - intrinsicHeight) / 2;
 
-                    if (dX > 0) { // Swipe ke kanan (ikon di kiri)
+                    if (dX > 0) {
                         iconLeft = itemView.getLeft() + iconMargin;
                         iconRight = itemView.getLeft() + iconMargin + intrinsicWidth;
-                    } else { // Swipe ke kiri (ikon di kanan)
+                    } else {
                         iconLeft = itemView.getRight() - iconMargin - intrinsicWidth;
                         iconRight = itemView.getRight() - iconMargin;
                     }
@@ -212,9 +207,8 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     }
                 }
             }
-        }; // Akhir dari deklarasi simpleItemTouchCallback
+        };
 
-        // --- Penggunaan simpleItemTouchCallback di sini ---
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }

@@ -8,19 +8,17 @@ public class J_NotificationItem {
     private int type;
     private String title;
     private String description;
-    private String time; // HH:mm
+    private String time;
     private boolean isRead;
-    private String eventDateString; // Tanggal event, untuk pengelompokan
-    private long rawTimestamp; // Timestamp mentah untuk sorting
+    private String eventDateString;
+    private long rawTimestamp;
     private String imageUrl;
-    private String key; // <-- TAMBAHKAN INI UNTUK MENYIMPAN KEY FIREBASE
+    private String key;
+    private String publicId;
 
-    // Constructor kosong (NO-ARGUMENT CONSTRUCTOR) <-- INI SANGAT PENTING!
     public J_NotificationItem() {
-        // Konstruktor default yang dibutuhkan Firebase
     }
 
-    // Konstruktor untuk Header
     public J_NotificationItem(int type, String title, String description, String time, boolean isRead) {
         this.type = type;
         this.title = title;
@@ -30,9 +28,9 @@ public class J_NotificationItem {
         this.eventDateString = null;
         this.rawTimestamp = 0;
         this.imageUrl = null;
+        this.publicId = null; // Initialize publicId to null
     }
 
-    // Konstruktor untuk Notifikasi (tanpa gambar)
     public J_NotificationItem(int type, String title, String description, String time, boolean isRead, String eventDateString, long rawTimestamp) {
         this.type = type;
         this.title = title;
@@ -42,9 +40,9 @@ public class J_NotificationItem {
         this.eventDateString = eventDateString;
         this.rawTimestamp = rawTimestamp;
         this.imageUrl = null;
+        this.publicId = null; // Initialize publicId to null
     }
 
-    // Konstruktor LENGKAP untuk Notifikasi (dengan gambar)
     public J_NotificationItem(int type, String title, String description, String time, boolean isRead, String eventDateString, long rawTimestamp, String imageUrl) {
         this.type = type;
         this.title = title;
@@ -54,9 +52,10 @@ public class J_NotificationItem {
         this.eventDateString = eventDateString;
         this.rawTimestamp = rawTimestamp;
         this.imageUrl = imageUrl;
+        this.key = null; // Initialize key to null
+        this.publicId = null; // Initialize publicId to null
     }
 
-    // --- Getters ---
     public int getType() { return type; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
@@ -65,9 +64,9 @@ public class J_NotificationItem {
     public String getEventDateString() { return eventDateString; }
     public long getRawTimestamp() { return rawTimestamp; }
     public String getImageUrl() { return imageUrl; }
-    public String getKey() { return key; } // <-- GETTER UNTUK KEY
+    public String getKey() { return key; }
+    public String getPublicId() { return publicId; }
 
-    // --- Setters ---
     public void setType(int type) { this.type = type; }
     public void setTitle(String title) { this.title = title; }
     public void setDescription(String description) { this.description = description; }
@@ -76,5 +75,6 @@ public class J_NotificationItem {
     public void setEventDateString(String eventDateString) { this.eventDateString = eventDateString; }
     public void setRawTimestamp(long rawTimestamp) { this.rawTimestamp = rawTimestamp; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-    public void setKey(String key) { this.key = key; } // <-- SETTER UNTUK KEY
+    public void setKey(String key) { this.key = key; }
+    public void setPublicId(String publicId) { this.publicId = publicId; }
 }

@@ -31,9 +31,7 @@
             android:name=".N_detailEvent"
             android:exported="false" />
         <activity
-            android:name=".D_WishlistActivity"
-            android:exported="false" />
-        <activity android:name=".D_WishlistDetailActivity"
+            android:name=".WishlistActivity"
             android:exported="false" />
         <activity
             android:name=".N_LauncherActivity"
@@ -52,7 +50,7 @@
             android:name=".N_LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".J_NotificationActivity"
+            android:name=".NotificationActivity"
             android:exported="false" />
     </application>
 
