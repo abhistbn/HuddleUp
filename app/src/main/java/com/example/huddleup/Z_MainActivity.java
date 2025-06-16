@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
-public class Z_MainActivity extends AppCompatActivity {
+public class Z_MainActivity extends BaseActivity {
 
     private ChipNavigationBar bottomNav;
 
@@ -29,9 +29,11 @@ public class Z_MainActivity extends AppCompatActivity {
         });
 
         if (savedInstanceState == null) {
+
             bottomNav.setItemSelected(R.id.nav_manage, true);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new Z_EventListFragment()).commit();
+
         }
 
         bottomNav.setOnItemSelectedListener(id -> {
@@ -56,6 +58,10 @@ public class Z_MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected int getNavigationMenuItemId() {
+        return R.id.nav_manage;
+    }
     public void showEventListFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new Z_EventListFragment())
