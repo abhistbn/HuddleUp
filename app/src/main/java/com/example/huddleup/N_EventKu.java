@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -18,7 +16,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEvent.OnMyEventListener {
@@ -50,6 +47,7 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
         tvde_Back.setOnClickListener(v -> {
             Intent intent = new Intent(N_EventKu.this, Z_MainActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 
@@ -75,10 +73,10 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
                     updateUI(true);
                 } else {
                     updateUI(false);
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String eventKey = snapshot.getKey();
+                    for (DataSnapshot regSnapshot : dataSnapshot.getChildren()) {
+                        String eventKey = regSnapshot.getKey();
                         if (eventKey != null) {
-                            fetchEventDetails(eventKey);
+                            fetchEventDetails(eventKey, regSnapshot);
                         }
                     }
                 }
@@ -91,29 +89,39 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
         });
     }
 
-    private void fetchEventDetails(String eventKey) {
+    private void fetchEventDetails(String eventKey, DataSnapshot regSnapshot) {
         dbEvents.child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot eventDetailsSnapshot) {
-                N_EventModel event = eventDetailsSnapshot.getValue(N_EventModel.class);
-                if (event != null) {
-                    event.setKey(eventDetailsSnapshot.getKey());
+                if (eventDetailsSnapshot.exists()){
+                    N_EventModel event = eventDetailsSnapshot.getValue(N_EventModel.class);
+                    if (event != null) {
+                        event.setKey(eventDetailsSnapshot.getKey());
+                        N_RegistrationInfo info = regSnapshot.getValue(N_RegistrationInfo.class);
+                        event.setRegistrationInfo(info);
 
-                    boolean exists = false;
-                    for (N_EventModel e : eventKuList) {
-                        if (e.getKey().equals(event.getKey())) {
-                            exists = true;
-                            break;
+                        int existingIndex = -1;
+                        for (int i = 0; i < eventKuList.size(); i++) {
+                            if (eventKuList.get(i).getKey().equals(event.getKey())) {
+                                existingIndex = i;
+                                break;
+                            }
                         }
+
+                        if (existingIndex != -1) {
+                            eventKuList.set(existingIndex, event);
+                        } else {
+                            eventKuList.add(event);
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    if (!exists) {
-                        eventKuList.add(event);
-                    }
-                    adapter.notifyDataSetChanged();
                 }
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(N_EventKu.this, "Gagal mengambil detail event: " + eventKey, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -141,6 +149,27 @@ public class N_EventKu extends AppCompatActivity implements N_EventAdapterMyEven
         intent.putExtra("waktu", event.getWaktu());
         intent.putExtra("lokasi", event.getLokasi());
         startActivity(intent);
+    }
+
+    @Override
+    public void onKonfirmasiClick(String eventKey) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Harap login untuk mengonfirmasi.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = currentUser.getUid();
+        DatabaseReference registrationRef = FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userId)
+                .child("registered_events")
+                .child(eventKey)
+                .child("status");
+
+        registrationRef.setValue("Terkonfirmasi")
+                .addOnSuccessListener(aVoid -> Toast.makeText(N_EventKu.this, "Kehadiran dikonfirmasi!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(N_EventKu.this, "Gagal mengonfirmasi.", Toast.LENGTH_SHORT).show());
     }
 
     private void updateUI(boolean isEmpty) {
