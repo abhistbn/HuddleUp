@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="green_primary">#4CAF50</color>
+    <color name="green_secondary">#388E3C</color>
+    <color name="green_accent">#81C784</color>
+
+    <color name="green_dark">#388E3C</color>   <!-- Hijau tua -->
+    <color name="green_text">#1B5E20</color>   <!--  teks -->
+
+        <color name="purple_200">#FFBB86FC</color>
+        <color name="purple_500">#FF6200EE</color>
+        <color name="purple_700">#FF3700B3</color>
+        <color name="teal_200">#FF03DAC5</color>
+        <color name="teal_700">#FF018786</color>
+        <color name="red_delete">#F44336</color>
+        <color name="blue_secondary">#2196F3</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="biruMuda">#4CABF0</color>
@@ -16,11 +31,6 @@
     <color name="green">#ff99cc00</color>
     <color name="kindaWhite">#FAFAFA</color>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
 
     <color name="gradient_start_color">#50C9C3</color>
     <color name="gradient_end_color">#2C7A9F</color>
@@ -30,3 +40,4 @@
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
 </resources>
+

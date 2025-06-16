@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvCategoryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event dalam Kategori [Category Name]"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_primary"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnEditCategoryFromDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Kategori"
+        android:layout_below="@id/tvCategoryTitle"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/green_primary"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:id="@+id/btnViewAllEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liat Semua Event"
+        android:layout_below="@id/tvCategoryTitle"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/blue_secondary"
+        android:textColor="@android:color/white"
+        android:visibility="visible"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategoryEvents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnEditCategoryFromDetail"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddEventToCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/green_primary"/>
+
+</RelativeLayout>
