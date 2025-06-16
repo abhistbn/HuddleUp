@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/nav_events"
+        android:icon="@drawable/event2"
+        android:title="Daftar Event"
+        app:cnb_backgroundColor="#1e40af"
+        app:cnb_iconColor="#ffffff"
+        app:cnb_textColor="#ffffff" />
+
+    <item
+        android:id="@+id/nav_manage"
+        android:icon="@drawable/edit"
+        android:title="Kelola Event"
+        app:cnb_backgroundColor="#1e40af"
+        app:cnb_iconColor="#ffffff"
+        app:cnb_textColor="#ffffff" />
+
+    <item
+        android:id="@+id/nav_favorites"
+        android:icon="@drawable/heart"
+        android:title="Favorit"
+        app:cnb_backgroundColor="#1e40af"
+        app:cnb_iconColor="#ffffff"
+        app:cnb_textColor="#ffffff" />
+
+    <item
+        android:id="@+id/nav_notifications"
+        android:icon="@drawable/notification"
+        android:title="Notifikasi"
+        app:cnb_backgroundColor="#1e40af"
+        app:cnb_iconColor="#ffffff"
+        app:cnb_textColor="#ffffff" />
+
+</menu>
