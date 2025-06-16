@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Z_EventListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,18 @@
         android:text="Event Ku"
         android:textAllCaps="false"
         android:textColor="@android:color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGoToWishlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/btnGoToMyEvents"
+        android:layout_alignBottom="@id/btnGoToMyEvents"
+        android:layout_marginBottom="3dp"
+        android:src="@drawable/ic_favorite_filled"
+        app:tint="@android:color/white"
+        app:fabSize="mini"
+        android:contentDescription="Buka Wishlist" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddEvent"
