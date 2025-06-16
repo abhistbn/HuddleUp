@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/huddleup/CategoryListActivityK.java
 package com.example.huddleup;
 
 import android.content.DialogInterface;

@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/huddleup/CategoryCreationActivityK.java
 package com.example.huddleup;
 
 import android.app.Activity;
@@ -24,63 +23,58 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CategoryCreationActivityK extends AppCompatActivity { // Nama kelas diakhiri 'K'
+public class CategoryCreationActivityK extends AppCompatActivity {
 
     private EditText etCategoryName;
     private RecyclerView rvEventSelectionList;
     private Button btnSaveCategory;
 
     private DatabaseReference mDatabase;
-    private List<EventK> allEvents = new ArrayList<>(); // Daftar semua EventK yang ada di Firebase
-    private EventSelectionAdapterK eventSelectionAdapter; // Adapter untuk menampilkan dan memilih event
+    private List<EventK> allEvents = new ArrayList<>();
+    private EventSelectionAdapterK eventSelectionAdapter;
 
-    private String categoryId = null; // Akan berisi ID jika dalam mode edit, null jika membuat baru
-    private CategoryK currentCategory; // Objek CategoryK yang sedang diedit (jika ada)
+    private String categoryId = null;
+    private CategoryK currentCategory;
 
     private static final String TAG = "CategoryCreationActivityK";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category_creation); // Mengaitkan dengan layout XML
+        setContentView(R.layout.activity_category_creation);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference(); // Inisialisasi Firebase Database
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // Mengambil referensi View dari layout
         etCategoryName = findViewById(R.id.etCategoryName);
         rvEventSelectionList = findViewById(R.id.rvEventSelectionList);
         btnSaveCategory = findViewById(R.id.btnSaveCategory);
 
-        rvEventSelectionList.setLayoutManager(new LinearLayoutManager(this)); // Mengatur layout manager untuk RecyclerView
+        rvEventSelectionList.setLayoutManager(new LinearLayoutManager(this));
 
-        // Mengecek apakah Activity ini dibuka dalam mode edit (ada ID kategori)
         if (getIntent().hasExtra("categoryId")) {
             categoryId = getIntent().getStringExtra("categoryId");
-            loadCategoryData(categoryId); // Muat data kategori yang akan diedit
+            loadCategoryData(categoryId);
         }
 
-        loadAllEvents(); // Muat semua event yang ada dari Firebase
+        loadAllEvents();
 
-        // Mengatur aksi klik untuk tombol "Save Category"
         btnSaveCategory.setOnClickListener(v -> saveCategory());
     }
 
-    // Memuat data kategori jika dalam mode edit
     private void loadCategoryData(String id) {
         mDatabase.child("categories").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                currentCategory = dataSnapshot.getValue(CategoryK.class); // Deserialisasi ke CategoryK
+                currentCategory = dataSnapshot.getValue(CategoryK.class);
                 if (currentCategory != null) {
-                    etCategoryName.setText(currentCategory.getName()); // Isi nama kategori
-                    // Inisialisasi adapter dengan event yang sudah terpilih di kategori ini
+                    etCategoryName.setText(currentCategory.getName());
                     Set<String> selectedIds = (currentCategory.getEvents() != null) ?
                             currentCategory.getEvents().keySet() : new HashSet<>();
-                    eventSelectionAdapter = new EventSelectionAdapterK(allEvents, selectedIds); // Menggunakan EventSelectionAdapterK
+                    eventSelectionAdapter = new EventSelectionAdapterK(allEvents, selectedIds);
                     rvEventSelectionList.setAdapter(eventSelectionAdapter);
                 } else {
                     Toast.makeText(CategoryCreationActivityK.this, "Category not found.", Toast.LENGTH_SHORT).show();
-                    finish(); // Tutup Activity jika kategori tidak ditemukan
+                    finish();
                 }
             }
 
@@ -93,30 +87,26 @@ public class CategoryCreationActivityK extends AppCompatActivity { // Nama kelas
         });
     }
 
-    // Memuat semua event dari Firebase Realtime Database
     private void loadAllEvents() {
         mDatabase.child("events").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                allEvents.clear(); // Bersihkan daftar lama
+                allEvents.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    EventK event = postSnapshot.getValue(EventK.class); // Deserialisasi ke EventK
+                    EventK event = postSnapshot.getValue(EventK.class);
                     if (event != null) {
-                        allEvents.add(event); // Tambahkan ke daftar
+                        allEvents.add(event);
                     }
                 }
-                // Jika adapter belum diinisialisasi (ini terjadi di mode buat baru atau sebelum loadCategoryData selesai)
                 if (eventSelectionAdapter == null) {
-                    eventSelectionAdapter = new EventSelectionAdapterK(allEvents, new HashSet<>()); // Inisialisasi dengan daftar kosong (tidak ada yang terpilih)
+                    eventSelectionAdapter = new EventSelectionAdapterK(allEvents, new HashSet<>());
                     rvEventSelectionList.setAdapter(eventSelectionAdapter);
                 } else {
-                    // Jika adapter sudah ada (misal di mode edit dan data event diperbarui), update datanya
-                    // Penting: Dapatkan seleksi yang sudah ada sebelum memperbarui data di adapter
                     Set<String> previouslySelectedIds = eventSelectionAdapter.getSelectedEventIds();
                     eventSelectionAdapter = new EventSelectionAdapterK(allEvents, previouslySelectedIds);
                     rvEventSelectionList.setAdapter(eventSelectionAdapter);
                 }
-                eventSelectionAdapter.notifyDataSetChanged(); // Beri tahu adapter data telah berubah
+                eventSelectionAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -127,7 +117,6 @@ public class CategoryCreationActivityK extends AppCompatActivity { // Nama kelas
         });
     }
 
-    // Menyimpan kategori ke Firebase (membuat baru atau mengedit yang sudah ada)
     private void saveCategory() {
         String categoryName = etCategoryName.getText().toString().trim();
         if (categoryName.isEmpty()) {
@@ -135,37 +124,34 @@ public class CategoryCreationActivityK extends AppCompatActivity { // Nama kelas
             return;
         }
 
-        Set<String> selectedEvents = eventSelectionAdapter.getSelectedEventIds(); // Dapatkan event yang terpilih dari adapter
+        Set<String> selectedEvents = eventSelectionAdapter.getSelectedEventIds();
 
-        if (categoryId == null) { // Jika categoryId null, berarti ini mode membuat kategori baru
-            categoryId = mDatabase.child("categories").push().getKey(); // Buat ID unik baru
-            currentCategory = new CategoryK(categoryId, categoryName); // Buat objek CategoryK baru
-        } else { // Jika categoryId tidak null, berarti ini mode mengedit kategori
-            if (currentCategory == null) { // Pastikan kategori yang akan diedit sudah dimuat
+        if (categoryId == null) {
+            categoryId = mDatabase.child("categories").push().getKey();
+            currentCategory = new CategoryK(categoryId, categoryName);
+        } else {
+            if (currentCategory == null) {
                 Toast.makeText(this, "Error: Category not loaded. Please try again.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            currentCategory.setName(categoryName); // Perbarui nama kategori
-            // Hapus semua event lama dari kategori ini sebelum menambahkan yang baru terpilih
+            currentCategory.setName(categoryName);
             if (currentCategory.getEvents() != null) {
                 currentCategory.getEvents().clear();
             } else {
-                currentCategory.setEvents(new HashMap<>()); // Pastikan map tidak null jika awalnya kosong
+                currentCategory.setEvents(new HashMap<>());
             }
         }
 
-        // Tambahkan semua event yang terpilih ke objek kategori
         for (String eventId : selectedEvents) {
             currentCategory.addEvent(eventId);
         }
 
-        // Simpan objek kategori ke Firebase
         if (categoryId != null) {
             mDatabase.child("categories").child(categoryId).setValue(currentCategory)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(CategoryCreationActivityK.this, "Category saved successfully!", Toast.LENGTH_SHORT).show();
-                        setResult(Activity.RESULT_OK); // Beri tahu Activity pemanggil bahwa operasi berhasil
-                        finish(); // Tutup Activity
+                        setResult(Activity.RESULT_OK);
+                        finish();
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(CategoryCreationActivityK.this, "Failed to save category: " + e.getMessage(), Toast.LENGTH_LONG).show();
