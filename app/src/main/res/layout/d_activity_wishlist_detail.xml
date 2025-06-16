@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".D_WishlistDetailActivity">
 
-    <!-- MENGGUNAKAN Toolbar DARI AppCompat -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarDetail"
         android:layout_width="match_parent"

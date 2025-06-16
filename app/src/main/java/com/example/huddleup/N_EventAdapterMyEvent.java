@@ -21,6 +21,7 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
     public interface OnMyEventListener {
         void onBatalClick(String eventKey);
         void onLihatTiketClick(N_EventModel event);
+        void onKonfirmasiClick(String eventKey);
     }
 
     public N_EventAdapterMyEvent(Context context, ArrayList<N_EventModel> eventList, OnMyEventListener listener) {
@@ -51,6 +52,26 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
                 .error(R.drawable.event)
                 .into(holder.imgEvent);
 
+        N_RegistrationInfo info = event.getRegistrationInfo();
+        if (info != null) {
+            holder.txtStatus.setVisibility(View.VISIBLE);
+            holder.txtStatus.setText("Status: " + info.getStatus());
+
+            if ("Telah Terdaftar".equals(info.getStatus())) {
+                holder.btnKonfirmasi.setVisibility(View.VISIBLE);
+                holder.btnKonfirmasi.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onKonfirmasiClick(event.getKey());
+                    }
+                });
+            } else {
+                holder.btnKonfirmasi.setVisibility(View.GONE);
+            }
+        } else {
+            holder.txtStatus.setVisibility(View.GONE);
+            holder.btnKonfirmasi.setVisibility(View.GONE);
+        }
+
         holder.btnBatal.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onBatalClick(event.getKey());
@@ -70,8 +91,8 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
     }
 
     public static class MyEventViewHolder extends RecyclerView.ViewHolder {
-        TextView txtJudul, txtTanggal, txtWaktu, txtLokasi;
-        Button btnBatal, btnLihatTiket;
+        TextView txtJudul, txtTanggal, txtWaktu, txtLokasi, txtStatus;
+        Button btnBatal, btnLihatTiket, btnKonfirmasi;
         ImageView imgEvent;
 
         public MyEventViewHolder(@NonNull View itemView) {
@@ -83,6 +104,8 @@ public class N_EventAdapterMyEvent extends RecyclerView.Adapter<N_EventAdapterMy
             btnBatal = itemView.findViewById(R.id.btniv_batal);
             btnLihatTiket = itemView.findViewById(R.id.btniv_detail);
             imgEvent = itemView.findViewById(R.id.imgEvent);
+            txtStatus = itemView.findViewById(R.id.txtStatus);
+            btnKonfirmasi = itemView.findViewById(R.id.btniv_konfirmasi);
         }
     }
 }

@@ -12,13 +12,14 @@ public class N_EventModel {
     private String location;
     private String about;
     private String imageUrl;
-    private Long creationTimestamp; // <-- Dipastikan ada dan getter/setter
+    private Long creationTimestamp;
+
+    @Exclude
+    private N_RegistrationInfo registrationInfo;
 
     public N_EventModel() {
-        // Konstruktor default dibutuhkan Firebase
     }
 
-    // Konstruktor saat event baru dibuat (dari admin atau form lain)
     public N_EventModel(String name, String date, String time, String location, String about, String imageUrl) {
         this.name = name;
         this.date = date;
@@ -26,18 +27,17 @@ public class N_EventModel {
         this.location = location;
         this.about = about;
         this.imageUrl = imageUrl;
-        this.creationTimestamp = System.currentTimeMillis(); // Set timestamp saat event dibuat
+        this.creationTimestamp = System.currentTimeMillis();
     }
 
-    // Constructor lengkap (jika perlu memuat dari Firebase dengan timestamp)
-    public N_EventModel(String name, String date, String time, String location, String about, String imageUrl, Long creationTimestamp) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.location = location;
-        this.about = about;
-        this.imageUrl = imageUrl;
-        this.creationTimestamp = creationTimestamp;
+    @Exclude
+    public N_RegistrationInfo getRegistrationInfo() {
+        return registrationInfo;
+    }
+
+    @Exclude
+    public void setRegistrationInfo(N_RegistrationInfo registrationInfo) {
+        this.registrationInfo = registrationInfo;
     }
 
     public String getKey() {

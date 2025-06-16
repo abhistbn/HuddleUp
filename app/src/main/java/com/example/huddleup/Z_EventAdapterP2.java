@@ -48,20 +48,17 @@ public class Z_EventAdapterP2 extends RecyclerView.Adapter<Z_EventAdapterP2.Even
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String currentUserId = currentUser.getUid();
-            // Referensi ini akan selalu mendengarkan perubahan pada "folder" wishlist pengguna
             DatabaseReference userWishlistRef = FirebaseDatabase.getInstance().getReference("wishlist").child(currentUserId);
-            wishlistRef = userWishlistRef; // Simpan referensi utama
+            wishlistRef = userWishlistRef;
 
             userWishlistRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    wishlistEventIds.clear(); // Bersihkan daftar ID lama
+                    wishlistEventIds.clear();
                     for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
                         // Tambahkan semua ID event yang ada di wishlist ke dalam set
                         wishlistEventIds.add(eventSnapshot.getKey());
                     }
-                    // Perintahkan RecyclerView untuk menggambar ulang dirinya
-                    // Ini akan memperbarui status "love" pada semua item yang terlihat
                     notifyDataSetChanged();
                 }
 
@@ -99,22 +96,19 @@ public class Z_EventAdapterP2 extends RecyclerView.Adapter<Z_EventAdapterP2.Even
         if (holder.ibAddToWishlist != null && currentEvent.getId() != null) {
             final String eventId = currentEvent.getId();
 
-            // Cek apakah ID event ini ada di dalam daftar wishlist kita
             if (wishlistEventIds.contains(eventId)) {
-                // JIKA YA: Tampilkan hati penuh, dan siapkan fungsi HAPUS
                 holder.ibAddToWishlist.setImageResource(R.drawable.ic_favorite_filled);
                 holder.ibAddToWishlist.setOnClickListener(v -> {
                     if (wishlistRef != null) {
-                        wishlistRef.child(eventId).removeValue(); // Hapus dari Firebase
+                        wishlistRef.child(eventId).removeValue();
                         Toast.makeText(context, "Dihapus dari wishlist", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                // JIKA TIDAK: Tampilkan hati kosong, dan siapkan fungsi TAMBAH
                 holder.ibAddToWishlist.setImageResource(R.drawable.ic_favorite_border);
                 holder.ibAddToWishlist.setOnClickListener(v -> {
                     if (wishlistRef != null) {
-                        wishlistRef.child(eventId).setValue(currentEvent); // Tambah ke Firebase
+                        wishlistRef.child(eventId).setValue(currentEvent);
                         Toast.makeText(context, "Ditambahkan ke wishlist", Toast.LENGTH_SHORT).show();
                     }
                 });

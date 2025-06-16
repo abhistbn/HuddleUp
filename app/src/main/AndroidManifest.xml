@@ -15,8 +15,7 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.HuddleUp"
-        tools:targetApi="31"
-        tools:replace="android:fullBackupContent">
+        tools:targetApi="31">
         <activity android:name=".Z_MainActivity"
             android:exported="false" />
         <activity
@@ -32,11 +31,16 @@
             android:name=".N_detailEvent"
             android:exported="false" />
         <activity
-            android:name=".D_WishlistActivity"
+            android:name=".WishlistActivity"
             android:exported="false" />
         <activity
             android:name=".N_LauncherActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- Aktivitas untuk form -->
@@ -46,14 +50,8 @@
             android:name=".N_LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".J_NotificationActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+            android:name=".NotificationActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
