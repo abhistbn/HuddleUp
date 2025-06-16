@@ -1,6 +1,7 @@
 package com.example.huddleup;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,13 +9,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 
 public class D_WishlistAdapter extends RecyclerView.Adapter<D_WishlistAdapter.ViewHolder> {
@@ -40,45 +37,54 @@ public class D_WishlistAdapter extends RecyclerView.Adapter<D_WishlistAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Menggunakan layout item wishlist
         View view = LayoutInflater.from(context).inflate(R.layout.d_item_wishlist, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Mengambil objek Z_EventP2 dari list
         Z_EventP2 item = wishlistItemList.get(position);
 
-        // Mengisi data ke dalam komponen-komponen view dari objek Z_EventP2
         holder.tvEventTitle.setText(item.getName());
         holder.tvEventDate.setText(item.getDate());
         holder.tvEventLocation.setText(item.getLocation());
 
-        // Menggunakan Glide untuk memuat gambar dari URL Firebase
         Glide.with(context)
                 .load(item.getImageUrl())
-                .placeholder(R.drawable.placeholder_event) // Pastikan drawable ini ada
+                .placeholder(R.drawable.placeholder_event)
                 .error(R.drawable.placeholder_event)
                 .into(holder.ivEventImage);
 
-        // Listener untuk seluruh item, akan membuka halaman detail
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(item);
             }
         });
 
-        // Listener untuk tombol hapus (ikon hati)
         holder.ibRemoveFromWishlist.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDeleteClick(item, holder.getAdapterPosition());
             }
         });
 
-        // Listener untuk tombol daftar
+        // --- BAGIAN YANG DIPERBAIKI ---
+        // Listener untuk tombol daftar sekarang mengarah ke N_detailEvent
         holder.btnRegister.setOnClickListener(v -> {
-            Toast.makeText(context, "Membuka halaman pendaftaran untuk " + item.getName(), Toast.LENGTH_SHORT).show();
+            // Membuat Intent untuk membuka N_detailEvent
+            Intent intent = new Intent(context, N_detailEvent.class);
+
+            // Mengirim semua data event yang relevan menggunakan putExtra
+            // Pastikan key-nya sama dengan yang diterima di N_detailEvent
+            intent.putExtra("event_key", item.getId());
+            intent.putExtra("title", item.getName());
+            intent.putExtra("date", item.getDate());
+            intent.putExtra("time", item.getTime());
+            intent.putExtra("location", item.getLocation());
+            intent.putExtra("about", item.getAbout());
+            intent.putExtra("image_url", item.getImageUrl());
+
+            // Memulai Activity
+            context.startActivity(intent);
         });
     }
 
