@@ -166,7 +166,26 @@ public class J_NotificationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     adapter.onItemSwipeListener.onItemSwipe(viewHolder.getAdapterPosition());
                 }
             }
+            // --- METHOD BARU DITAMBAHKAN DI SINI ---
+// Di dalam J_NotificationAdapter.java -> attachItemTouchHelper
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                final int position = viewHolder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) {
+                    return 0;
+                }
 
+                J_NotificationItem item = adapter.notificationList.get(position);
+
+                // HANYA BLOKIR swipe untuk HEADER
+                if (item.getType() == J_NotificationItem.TYPE_HEADER) {
+                    return 0;
+                }
+
+                // Izinkan swipe untuk semua item lainnya (baik manual maupun event)
+                final int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                return makeMovementFlags(0, swipeFlags);
+            }
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

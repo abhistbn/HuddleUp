@@ -89,7 +89,7 @@ public class Z_EventAdapterP2 extends RecyclerView.Adapter<Z_EventAdapterP2.Even
         Glide.with(context)
                 .load(currentEvent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher_round)
+                .error(R.mipmap.ic_launcher)
                 .into(holder.imgEventPoster);
 
         // --- UNTUK TOMBOL WISHLIST ---

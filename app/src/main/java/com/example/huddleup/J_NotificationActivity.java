@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -92,6 +93,21 @@ public class J_NotificationActivity extends BaseActivity {
         tempManualNotificationsList = new ArrayList<>();
 
         J_NotificationAdapter.attachItemTouchHelper(recyclerView, adapter);
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 3. Buat Intent untuk pindah ke Z_MainActivity
+                Intent intent = new Intent(J_NotificationActivity.this, Z_MainActivity.class);
+
+                // 4. Jalankan Intent untuk membuka activity baru
+                startActivity(intent);
+
+                // 5. (Opsional tapi disarankan) Tutup activity saat ini agar tidak menumpuk
+                finish();
+            }
+        });
+
 
         FloatingActionButton fabUpload = findViewById(R.id.fabUpload);
         fabUpload.setOnClickListener(v -> showAddNotificationDialog());
@@ -100,23 +116,55 @@ public class J_NotificationActivity extends BaseActivity {
             return true;
         });
 
+// Di dalam onCreate() di J_NotificationActivity.java
         adapter.setOnItemLongClickListener(position -> {
-            if (notificationList.get(position).getType() == J_NotificationItem.TYPE_NOTIFICATION) {
+            final J_NotificationItem item = notificationList.get(position);
+
+            // HANYA izinkan edit jika itu notifikasi dan punya key (artinya notifikasi manual)
+            if (item.getType() == J_NotificationItem.TYPE_NOTIFICATION && item.getKey() != null && !item.getKey().isEmpty()) {
                 showEditNotificationDialog(position);
             } else {
-                Log.d("NOTIF_ACTION", "Cannot edit header item.");
+                // Jangan lakukan apa-apa, atau tampilkan pesan singkat jika perlu
+                Log.d("NOTIF_ACTION", "This item cannot be edited.");
+                Toast.makeText(this, "This notification cannot be edited", Toast.LENGTH_SHORT).show();
             }
         });
 
+// Di dalam onCreate() di J_NotificationActivity.java
         adapter.setOnItemSwipeListener(position -> {
-            J_NotificationItem swipedItem = notificationList.get(position);
-            Log.d("SWIPE_DEBUG", "Item at position " + position + " swiped. Title: " + swipedItem.getTitle());
+            if (position < 0 || position >= notificationList.size()) {
+                return;
+            }
 
-            if (swipedItem.getType() == J_NotificationItem.TYPE_NOTIFICATION) {
-                adapter.deleteItem(position);
-            } else {
+            final J_NotificationItem swipedItem = notificationList.get(position);
+
+            // KONDISI 1: Jika ini notifikasi MANUAL (punya key), hapus dari Firebase.
+            if (swipedItem.getKey() != null && !swipedItem.getKey().isEmpty()) {
+                DatabaseReference notificationRef = FirebaseDatabase.getInstance()
+                        .getReference("notifications")
+                        .child(swipedItem.getKey());
+
+                notificationRef.removeValue().addOnSuccessListener(aVoid -> {
+                    Log.d("FIREBASE_DELETE", "Manual notification deleted: " + swipedItem.getKey());
+                    Toast.makeText(J_NotificationActivity.this, "Notification deleted", Toast.LENGTH_SHORT).show();
+                    // Hapus dari tampilan setelah sukses dari DB
+                    // (Adapter akan menangani penghapusan dari list)
+                }).addOnFailureListener(e -> {
+                    Log.e("FIREBASE_DELETE", "Failed to delete notification", e);
+                    Toast.makeText(J_NotificationActivity.this, "Failed to delete", Toast.LENGTH_SHORT).show();
+                    // Jika gagal, kembalikan item ke posisi semula
+                    adapter.notifyItemChanged(position);
+                });
+            }
+            // KONDISI 2: Jika ini notifikasi EVENT (tidak punya key), hapus dari TAMPILAN SAJA.
+            else if (swipedItem.getEventDateString() != null) {
+                notificationList.remove(position);
+                adapter.notifyItemRemoved(position);
+                Toast.makeText(J_NotificationActivity.this, "Notification hidden", Toast.LENGTH_SHORT).show();
+            }
+            // KONDISI 3: Jika bukan keduanya (untuk keamanan), batalkan swipe.
+            else {
                 adapter.notifyItemChanged(position);
-                Log.d("SWIPE_DEBUG", "Swipe cancelled: not a notification item.");
             }
         });
 
@@ -323,122 +371,103 @@ public class J_NotificationActivity extends BaseActivity {
         loadAllEventsFromDb(new HashMap<>(), false);
     }
 
-    private String getKategoriWaktuNotifikasi(long timestampNotifikasi) {
-        SimpleDateFormat dayOnlySdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Date today = new Date(System.currentTimeMillis());
-        Date notifDate = new Date(timestampNotifikasi);
-
-        try {
-            Date todayStartOfDay = dayOnlySdf.parse(dayOnlySdf.format(today));
-            Date notifDateStartOfDay = dayOnlySdf.parse(dayOnlySdf.format(notifDate));
-
-            long diffMillis = notifDateStartOfDay.getTime() - todayStartOfDay.getTime();
-            long diffDays = TimeUnit.DAYS.convert(diffMillis, TimeUnit.MILLISECONDS);
-
-            if (diffDays == 0) {
-                return "Hari Ini";
-            } else if (diffDays == -1) {
-                return "Kemarin";
-            } else {
-                return "Hari-Hari Lalu";
-            }
-        } catch (ParseException e) {
-            Log.e("NotificationActivity", "Error parsing date for notification timestamp: " + timestampNotifikasi + " - " + e.getMessage());
-            return "Hari-Hari Lalu";
-        }
-    }
 
     private void loadAllEventsFromDb(HashMap<String, Long> registeredEventTimestamps, boolean userIsLoggedIn) {
-        eventsDbRef.addValueEventListener(new ValueEventListener() {
+        eventsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tempFollowedEventsList.clear();
-                SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
-                SimpleDateFormat eventDateParser = new SimpleDateFormat("dd MMMM यथा", new Locale("id", "ID"));
+                tempNewEventsList.clear();
+
+                SimpleDateFormat eventDateParser = new SimpleDateFormat("dd MMMM yyyy", new Locale("id", "ID"));
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    // Asumsi N_EventModel sudah memiliki getImageUrl()
                     N_EventModel event = dataSnapshot.getValue(N_EventModel.class);
                     if (event != null) {
                         event.setKey(dataSnapshot.getKey());
 
+                        // --- Logika untuk event yang diikuti user ---
                         if (userIsLoggedIn && registeredEventTimestamps.containsKey(event.getKey())) {
-                            Long registrationTimestamp = registeredEventTimestamps.get(event.getKey());
-                            String formattedTimestamp = (registrationTimestamp != null) ? timeFormatter.format(new Date(registrationTimestamp)) : "Just now";
 
-                            tempFollowedEventsList.add(new J_NotificationItem(
-                                    J_NotificationItem.TYPE_NOTIFICATION,
-                                    "🎉 Registration Successful: " + event.getName(),
-                                    "Congratulations! You have successfully registered for the event '" + event.getName() + "'. Get ready for an exciting adventure!",
-                                    formattedTimestamp,
-                                    false,
-                                    event.getDate(),
-                                    (registrationTimestamp != null) ? registrationTimestamp : System.currentTimeMillis(),
-                                    null
-                            ));
+                            String finalTitle = "🎉 Registration Successful: " + event.getName();
+                            String finalMessage = "Congratulations! You have successfully registered for the event '" + event.getName() + "'.";
+                            long finalTimestampForSorting = System.currentTimeMillis();
 
                             try {
-                                String kategoriWaktu = getKategoriTanggal(event.getDate());
-                                String uniqueMessage = "";
-                                String title = "";
-                                long currentNotifTimestamp = System.currentTimeMillis();
-                                String currentFormattedTime = timeFormatter.format(new Date(currentNotifTimestamp));
-
                                 Date eventActualDate = eventDateParser.parse(event.getDate());
-                                long diffMillisToEvent = eventActualDate.getTime() - System.currentTimeMillis();
+                                long eventTimestamp = eventActualDate.getTime(); // Ambil timestamp long dari tanggal event
+
+                                long diffMillisToEvent = eventTimestamp - System.currentTimeMillis();
                                 long diffDaysToEvent = TimeUnit.DAYS.convert(diffMillisToEvent, TimeUnit.MILLISECONDS);
 
+                                // Panggil dengan long timestamp yang benar
+                                String kategoriWaktu = getKategoriTanggal(eventTimestamp);
+                                String timeSensitiveTitle = "";
+                                String timeSensitiveMessage = "";
+
                                 switch (kategoriWaktu) {
-                                    case "Hari Ini": title = "🔔 TODAY: " + event.getName() + " Starts!"; uniqueMessage = "Time for action! The event '" + event.getName() + "' awaits your presence. Don't miss out!"; break;
-                                    case "Besok": title = "⏳ Only 1 Day Left: " + event.getName(); uniqueMessage = "Final countdown! Tomorrow is the day for '" + event.getName() + "'. Prepare yourself!"; break;
-                                    case "Mendatang (7 Hari)": title = "🗓️ " + (diffDaysToEvent + 1) + " Days Until: " + event.getName(); uniqueMessage = "Can't wait? Only a few days left until '" + event.getName() + "'. Stay excited!"; break;
-                                    case "7 Hari Terakhir":
-                                    case "Kemarin":
-                                    case "Lainnya (Lampau)": title = "Event Finished: " + event.getName(); uniqueMessage = "The event '" + event.getName() + "' has concluded. Thank you for participating!"; break;
-                                    case "Mendatang (Jauh)":
-                                    default: title = "🗓️ Upcoming Event: " + event.getName(); uniqueMessage = "This event will be coming soon. Stay tuned for updates!"; break;
+                                    case "Hari Ini":
+                                        timeSensitiveTitle = "🔔 TODAY: " + event.getName() + " Starts!";
+                                        timeSensitiveMessage = "Time for action! The event '" + event.getName() + "' awaits your presence.";
+                                        break;
+                                    case "Besok":
+                                        timeSensitiveTitle = "⏳ Only 1 Day Left: " + event.getName();
+                                        timeSensitiveMessage = "Final countdown! Tomorrow is the day for '" + event.getName() + "'.";
+                                        break;
+                                    case "Mendatang (7 Hari)":
+                                        timeSensitiveTitle = "🗓 " + (diffDaysToEvent + 1) + " Days Until: " + event.getName();
+                                        timeSensitiveMessage = "Can't wait? Only a few days left until '" + event.getName() + "'.";
+                                        break;
+                                    case "7 Hari Terakhir": case "Kemarin": case "Lainnya (Lampau)":
+                                        timeSensitiveTitle = "Event Finished: " + event.getName();
+                                        timeSensitiveMessage = "The event '" + event.getName() + "' has concluded. Thank you for participating!";
+                                        break;
                                 }
 
-                                if (!title.isEmpty()) {
-                                    tempFollowedEventsList.add(new J_NotificationItem(
-                                            J_NotificationItem.TYPE_NOTIFICATION,
-                                            title,
-                                            uniqueMessage,
-                                            currentFormattedTime,
-                                            false,
-                                            event.getDate(),
-                                            currentNotifTimestamp,
-                                            null
-                                    ));
+                                if (!timeSensitiveTitle.isEmpty()) {
+                                    finalTitle = timeSensitiveTitle;
+                                    finalMessage = timeSensitiveMessage;
                                 }
 
                             } catch (ParseException e) {
-                                Log.e("NOTIF_DEBUG", "Error parsing date for followed event: " + event.getName() + " - " + e.getMessage());
+                                Log.e("NOTIF_DEBUG", "Error parsing date for followed event: " + event.getName(), e);
                             }
-                        } else {
+
+                            tempFollowedEventsList.add(new J_NotificationItem(
+                                    J_NotificationItem.TYPE_NOTIFICATION,
+                                    finalTitle,
+                                    finalMessage,
+                                    event.getDate(), // Menampilkan TANGGAL event
+                                    false,
+                                    event.getDate(),
+                                    finalTimestampForSorting,
+                                    event.getImageUrl() // Asumsi ada method getImageUrl()
+                            ));
+
+                        } else { // --- Logika untuk event baru yang belum diikuti ---
                             long notificationTimestamp;
                             try {
                                 Date eventDateObj = eventDateParser.parse(event.getDate());
                                 notificationTimestamp = eventDateObj.getTime();
                             } catch (ParseException e) {
-                                Log.e("NOTIF_DEBUG", "Error parsing event date for new event timestamp: " + event.getDate() + " - " + e.getMessage());
                                 notificationTimestamp = System.currentTimeMillis();
                             }
-                            String formattedTimestamp = timeFormatter.format(new Date(notificationTimestamp));
 
                             tempNewEventsList.add(new J_NotificationItem(
                                     J_NotificationItem.TYPE_NOTIFICATION,
                                     "New Event: " + event.getName(),
                                     event.getAbout(),
-                                    formattedTimestamp,
+                                    event.getDate(), // Menampilkan TANGGAL event
                                     false,
                                     event.getDate(),
                                     notificationTimestamp,
-                                    null
+                                    event.getImageUrl() // Asumsi ada method getImageUrl()
                             ));
                         }
                     }
                 }
-                Log.d("FIREBASE_DATA_LOADED", "Events data loaded. Total followed events: " + tempFollowedEventsList.size() + ", Total new events from events node: " + tempNewEventsList.size());
+                Log.d("FIREBASE_DATA_LOADED", "Events data loaded. Followed: " + tempFollowedEventsList.size() + ", New: " + tempNewEventsList.size());
                 loadManualNotifications();
             }
 
@@ -449,7 +478,6 @@ public class J_NotificationActivity extends BaseActivity {
             }
         });
     }
-
     private void loadManualNotifications() {
         DatabaseReference notificationsDbRef = FirebaseDatabase.getInstance().getReference("notifications");
 
@@ -481,105 +509,117 @@ public class J_NotificationActivity extends BaseActivity {
     }
 
     private void populateRecyclerView() {
-        List<J_NotificationItem> hariIniNotifications = new ArrayList<>();
-        List<J_NotificationItem> kemarinNotifications = new ArrayList<>();
-        List<J_NotificationItem> hariHariLaluNotifications = new ArrayList<>();
+        // --- BAGIAN 1: PROSES NOTIFIKASI EVENT ---
+        List<J_NotificationItem> hariIniEvents = new ArrayList<>();
+        List<J_NotificationItem> besokEvents = new ArrayList<>();
+        List<J_NotificationItem> mendatangEvents = new ArrayList<>();
+        List<J_NotificationItem> kemarinEvents = new ArrayList<>();
+        List<J_NotificationItem> eventLampau = new ArrayList<>();
 
         List<J_NotificationItem> allEventNotifications = new ArrayList<>();
         allEventNotifications.addAll(tempFollowedEventsList);
         allEventNotifications.addAll(tempNewEventsList);
 
+        // Urutkan dan kategorikan HANYA notifikasi event
         Collections.sort(allEventNotifications, (item1, item2) -> Long.compare(item2.getRawTimestamp(), item1.getRawTimestamp()));
 
         for (J_NotificationItem item : allEventNotifications) {
-            long timestamp = item.getRawTimestamp();
-            if (timestamp == 0) {
-                timestamp = System.currentTimeMillis();
-            }
-            String kategori = getKategoriWaktuNotifikasi(timestamp);
-
+            String kategori = getKategoriTanggal(item.getRawTimestamp());
             switch (kategori) {
                 case "Hari Ini":
-                    hariIniNotifications.add(item);
+                    hariIniEvents.add(item);
+                    break;
+                case "Besok":
+                    besokEvents.add(item);
+                    break;
+                case "Mendatang (7 Hari)":
+                case "Mendatang (Jauh)":
+                    mendatangEvents.add(item);
                     break;
                 case "Kemarin":
-                    kemarinNotifications.add(item);
+                    kemarinEvents.add(item);
                     break;
-                default:
-                    hariHariLaluNotifications.add(item);
+                default: // Menangkap "Hari-Hari Lalu"
+                    eventLampau.add(item);
                     break;
             }
         }
 
+        // --- BAGIAN 2: SUSUN ULANG TAMPILAN AKHIR ---
         notificationList.clear();
 
+        // Prioritas 1: Tampilkan Notifikasi Manual di paling atas
         if (!tempManualNotificationsList.isEmpty()) {
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Important Notifications", "", "", false, null, 0, null));
+            // Tambahkan header khusus untuk notifikasi manual
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Notifikasi Manual", "", "", false, null, 0, null));
+
+            // Urutkan notifikasi manual berdasarkan waktu pembuatannya (terbaru di atas)
             Collections.sort(tempManualNotificationsList, (item1, item2) -> Long.compare(item2.getRawTimestamp(), item1.getRawTimestamp()));
+
             notificationList.addAll(tempManualNotificationsList);
         }
 
-        if (!hariIniNotifications.isEmpty()) {
+        // Prioritas 2: Tampilkan notifikasi event yang sudah dikategorikan
+        if (!hariIniEvents.isEmpty()) {
             notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Today", "", "", false, null, 0, null));
-            notificationList.addAll(hariIniNotifications);
+            notificationList.addAll(hariIniEvents);
         }
-
-        if (!kemarinNotifications.isEmpty()) {
+        if (!besokEvents.isEmpty()) {
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Tomorrow", "", "", false, null, 0, null));
+            notificationList.addAll(besokEvents);
+        }
+        if (!mendatangEvents.isEmpty()) {
+            Collections.sort(mendatangEvents, (item1, item2) -> Long.compare(item1.getRawTimestamp(), item2.getRawTimestamp()));
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Upcoming", "", "", false, null, 0, null));
+            notificationList.addAll(mendatangEvents);
+        }
+        if (!kemarinEvents.isEmpty()) {
             notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Yesterday", "", "", false, null, 0, null));
-            notificationList.addAll(kemarinNotifications);
+            notificationList.addAll(kemarinEvents);
         }
-
-        if (!hariHariLaluNotifications.isEmpty()) {
-            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Past Days", "", "", false, null, 0, null));
-            notificationList.addAll(hariHariLaluNotifications);
+        if (!eventLampau.isEmpty()) {
+            notificationList.add(new J_NotificationItem(J_NotificationItem.TYPE_HEADER, "Past Events", "", "", false, null, 0, null));
+            notificationList.addAll(eventLampau);
         }
 
         adapter.notifyDataSetChanged();
-        Log.d("NOTIF_CHECK", "Total notifications displayed in RecyclerView: " + notificationList.size());
-
-        for (int i = 0; i < notificationList.size(); i++) {
-            J_NotificationItem item = notificationList.get(i);
-            Log.d("DEBUG_FINAL_LIST", i + ": Type=" + item.getType() + ", Title='" + item.getTitle() + "', RawTimestamp=" + item.getRawTimestamp() + ", ImageUrl=" + item.getImageUrl());
-        }
+        Log.d("NOTIF_CHECK", "Total notifications displayed: " + notificationList.size());
     }
 
-    private String getKategoriTanggal(String tanggalEvent) {
-        SimpleDateFormat inputSdfFirebaseID = new SimpleDateFormat("dd MMMM यथा", new Locale("id", "ID"));
-        Date eventDate;
-        try {
-            eventDate = inputSdfFirebaseID.parse(tanggalEvent);
-        } catch (ParseException e) {
-            Log.e("NotificationActivity", "Error parsing event date string (dd MMMM यथा): " + tanggalEvent + " - " + e.getMessage());
-            return "Other";
+    // GANTI method getKategoriTanggal yang lama dengan versi baru ini
+    private String getKategoriTanggal(long timestamp) { // Sekarang menerima long timestamp
+        if (timestamp == 0) {
+            // Jika timestamp tidak valid, anggap saja sudah lampau
+            return "Hari-Hari Lalu";
         }
 
+        Date notifDate = new Date(timestamp);
         Date today = new Date();
         SimpleDateFormat dayOnlySdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
         try {
             Date todayStartOfDay = dayOnlySdf.parse(dayOnlySdf.format(today));
-            Date eventDateStartOfDay = dayOnlySdf.parse(dayOnlySdf.format(eventDate));
+            Date notifDateStartOfDay = dayOnlySdf.parse(dayOnlySdf.format(notifDate));
 
-            long diffMillis = eventDateStartOfDay.getTime() - todayStartOfDay.getTime();
+            long diffMillis = notifDateStartOfDay.getTime() - todayStartOfDay.getTime();
             long diffDays = TimeUnit.DAYS.convert(diffMillis, TimeUnit.MILLISECONDS);
 
-            if (diffDays == 0) {
-                return "Hari Ini";
-            } else if (diffDays == 1) {
-                return "Besok";
+            if (diffDays > 7) {
+                return "Mendatang (Jauh)";
             } else if (diffDays > 1 && diffDays <= 7) {
                 return "Mendatang (7 Hari)";
-            } else if (diffDays > 7) {
-                return "Mendatang (Jauh)";
+            } else if (diffDays == 1) {
+                return "Besok";
+            } else if (diffDays == 0) {
+                return "Hari Ini";
             } else if (diffDays == -1) {
                 return "Kemarin";
-            } else if (diffDays < -1 && diffDays >= -7) {
-                return "7 Hari Terakhir";
-            } else {
-                return "Lainnya (Lampau)";
+            } else { // Semua hari yang sudah lewat lainnya
+                return "Hari-Hari Lalu";
             }
         } catch (ParseException e) {
-            Log.e("NotificationActivity", "Error comparing dates after initial parse: " + e.getMessage());
-            return "Other";
+            Log.e("DATE_COMPARE_ERROR", "Error comparing dates: " + e.getMessage());
+            return "Hari-Hari Lalu";
         }
     }
 

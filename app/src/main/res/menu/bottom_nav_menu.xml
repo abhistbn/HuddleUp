@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/nav_manage"
-        android:icon="@drawable/edit"
+        android:icon="@drawable/daftar"
         android:title="Kelola Event"
         app:cnb_backgroundColor="#1e40af"
         app:cnb_iconColor="#ffffff"
