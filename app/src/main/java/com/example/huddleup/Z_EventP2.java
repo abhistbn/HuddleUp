@@ -23,7 +23,7 @@ public class Z_EventP2 implements Parcelable {
     private Uri imageUri;
 
     public Z_EventP2() {
-        // Diperlukan oleh Firebase
+
     }
 
     public Z_EventP2(String id, String name, String imageUrl, String date, String time, String location, String about) {
@@ -81,7 +81,6 @@ public class Z_EventP2 implements Parcelable {
         }
     };
 
-    // --- GETTER DAN SETTER ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getName() { return name; }
