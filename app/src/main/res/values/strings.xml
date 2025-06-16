@@ -2,15 +2,12 @@
     <string name="app_name">HuddleUp</string>
     <string name="ready">at Universitas Brawijaya. <b>Are you ready?</b></string>
     <string name="back">&lt; Back</string>
-<<<<<<< HEAD
+
     <string name="nama_kategori">Nama Kategori:</string>
     <string name="pilih_event_untuk_kategori_ini">Pilih event untuk kategori ini:</string>
-=======
+
     <string name="profile_picture">Profile picture</string>
     <string name="notification_title">Title</string>
     <string name="default_web_client_id">601847698528-juqn55ii7hrvsfpjo50ugkrktto9d9p7.apps.googleusercontent.com</string>
 
-
-
->>>>>>> 5b82418c590eed52fd91a5e118093a5ef949ab6f
 </resources>
